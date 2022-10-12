@@ -1,0 +1,44 @@
+{% load static %}
+  
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Hackernews Reader</title>
+  <meta name="Hackernews Reader" content="">
+  <meta name="Abdelkader Amar" content="">
+
+  {% comment %} <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"> {% endcomment %}
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="{% static 'css/hn.css' %}" rel="stylesheet" type="text/css">
+  
+  
+  {% comment %} <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> {% endcomment %}
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <ul class="nav">
+        {% comment %} <li class="nav-item"><a class="nav-link" href="{% url 'sources:index' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'products:index' %}">Products</a></li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sources
+            </a>
+            <ul class="dropdown-menu">
+                {% for source, sourcename in source_list %}
+                <li><a class="dropdown-item nav-link" href="{% url 'sources:source_details' source_name=source %}">{{sourcename}}</a></li>
+                {% endfor %}
+            </ul>
+        </li> {% endcomment %}
+      </ul>
+    </div>
+  </nav>
+  {% block content %}
+  {% endblock content %}
+  <script type="text/javascript" src="{% static 'js/hn.js' %}"></script>
+</body>
+
+</html>

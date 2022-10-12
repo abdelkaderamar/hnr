@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class='container'>
+<select id='sort-stories-combobox' class="form-select" aria-label="Sorting" onchange="sortStories();">
+    <option selected>Choose sort factor</option>
+    <option value="score">Score</option>
+    <option value="descendants">Comments</option>
+    <option value="ratio">Ratio score/comments</option>
+  </select>
+</div>
+
+<ul class="list-group">
+{% for story in stories %}
+<li class="list-group-item">
+    <form style="float" method="post" 
+        action="{% url 'feed:save' story.id %}" class="inline">
+        {% csrf_token %}
+        {% comment %} <input type="hidden" name="story_id" value="{{story.id}}"> {% endcomment %}
+        <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
+            <img class="add-image" src="{% static 'images/add.png' %}"/>
+        </button>
+    </form>
+    <span class="hn-score">{{story.score}}</span>
+    <a class="hn-title" href="{{story.url}}">{{story.title}}</a>
+    <a class="hn-comment" href="https://news.ycombinator.com/item?id={{story.id}}">{{story.descendants}} Comments</a>
+</li>
+{% endfor %}
+</ul>
+
+<script type="text/javascript">
+    function sortStories() {
+        var sortComboBox = document.getElementById('sort-stories-combobox');
+        var selectedValue = sortComboBox[sortComboBox.selectedIndex].value;
+        console.log("Selected value " + selectedValue);
+        switch (selectedValue) {
+        case 'score':
+        case 'descendants':
+        case 'ratio':
+            window.location = "/feed/sort/" + selectedValue;
+            break;
+        }
+    }
+</script>
+
+{% endblock content %}

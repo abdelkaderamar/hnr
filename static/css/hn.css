@@ -1,0 +1,60 @@
+.hn-score {
+	text-align: center;
+	color: green;
+	padding: 5px;
+	/* float: inline-end; */
+	/* border-style: solid; */
+	/* border-radius: 5px; */
+	display: inline-block;
+	min-width: 48px;
+	font-family: 'Courier New', Courier, monospace;
+	font-weight: bolder;
+}
+
+.hn-title {
+	padding: 10px;
+	font-size: large;
+}
+
+.hn-comment {
+	text-align: center;
+	color: orange;
+	padding: 5px;
+	border-style: solid;
+	border-radius: 5px;
+	float: right;
+	/* display: inline-block; */
+	min-width: 128px;
+	font-size: small;
+}
+
+.hn-add {
+	background: url("/static/images/add.png") 50% 0 no-repeat fixed;
+}
+
+.inline {
+	display: inline;
+	float: left;
+  }
+  
+.link-button {
+	background: none;
+	border: none;
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 1em;
+	font-family: serif;
+  }
+.link-button:focus {
+	outline: none;
+}
+  
+.link-button:active {
+	color:red;
+}
+
+.add-image {
+	width: 32px;
+	float: right;
+}
