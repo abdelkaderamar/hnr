@@ -31,6 +31,55 @@
 {% endfor %}
 </ul>
 
+<!--Pagination-->
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+  {% if stories.has_previous %}
+  <li class="page-item">
+  <a class="page-link" href="?page={{ stories.previous_page_number }}">Previous</a>
+  </li>
+  {% else %}
+  <li class="page-item disabled">
+  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+  </li>
+  {% endif %}
+
+  {% if stories.number|add:'-4' > 1 %}
+  <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'-5' }}">&hellip;</a></li>
+  {% endif %}
+
+  {% for i in stories.paginator.page_range %}
+    {% if stories.number == i %}
+    <li class="page-item active" aria-current="page">
+      <span class="page-link">
+      {{ i }}
+      <span class="sr-only">(current)</span>
+    </span>
+    </li>
+    {% elif i > stories.number|add:'-5' and i < stories.number|add:'5' %}
+    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+    {% endif %}
+  {% endfor %}
+
+  {% if stories.paginator.num_pages > stories.number|add:'4' %}
+  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'5' }}">&hellip;</a></li>
+  <li class="page-item"><a class="page-link" href="?page={{ stories.paginator.num_pages }}">{{ stories.paginator.num_pages }}</a></li>
+  {% endif %}
+
+  {% if stories.has_next %}
+  <li class="page-item">
+  <a class="page-link" href="?page={{ stories.next_page_number }}">Next</a>
+  </li>
+  {% else %}
+  <li class="page-item disabled">
+  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+  </li>
+  {% endif %}
+  </ul>
+</nav>
+<!--end of Pagination-->
+
 <script type="text/javascript">
     function sortStories() {
         var sortComboBox = document.getElementById('sort-stories-combobox');
