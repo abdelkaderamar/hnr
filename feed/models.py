@@ -1,4 +1,6 @@
+from email.policy import default
 from django.db import models
+from django.contrib.auth.models import User
 
 class Story(models.Model):
     id=models.IntegerField(primary_key=True)
@@ -8,23 +10,15 @@ class Story(models.Model):
     time=models.DateTimeField()
     url=models.CharField(max_length=1024, null=False)
     descendants=models.IntegerField(default=0)
-    class Meta:
-        abstract = True
-
-class TopStory(Story):
-    pass
-
-class NewStory(Story):
-    pass
-
-class BestStory(Story):
-    pass
-
-class AskStory(Story):
-    pass
-
-class ShowStory(Story):
-    pass
-
-class JobStory(Story):
-    pass
+    is_top = models.BooleanField(default=False)
+    is_new = models.BooleanField(default=False)
+    is_best = models.BooleanField(default=False)
+    is_ask = models.BooleanField(default=False)
+    is_show = models.BooleanField(default=False)
+    is_job = models.BooleanField(default=False)
+    
+class UserStory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    story = models.ForeignKey(Story, on_delete=models.PROTECT)
+    saved = models.BooleanField(default=False)
+    ignored = models.BooleanField(default=False)

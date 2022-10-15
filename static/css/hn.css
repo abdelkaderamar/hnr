@@ -35,7 +35,11 @@
 .inline {
 	display: inline;
 	float: left;
-  }
+}
+
+.inline2 {
+	display: inline;
+}
   
 .link-button {
 	background: none;
@@ -56,5 +60,15 @@
 
 .add-image {
 	width: 32px;
+	float: right;
+}
+
+.added-image {
+	width: 32px;
+	float: right;
+}
+
+.hide-image {
+	width: 24px;
 	float: right;
 }

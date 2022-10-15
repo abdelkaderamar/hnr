@@ -44,6 +44,8 @@ def configure_django():
     },
     INSTALLED_APPS=[
         'feed.apps.FeedConfig',
+        'django.contrib.contenttypes',
+        'django.contrib.auth',
     ]
     )
     django.setup()
@@ -53,37 +55,39 @@ BASE_URL = 'https://news.ycombinator.com/item?id='
 console = Console()
 
 def get_db_story(list_type,id):
-    from feed.models import Story, TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
+    from feed.models import Story
+    # from feed.models import Story, TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
     db_story = None
     if list_type == TOP_STORY:
-        db_story = TopStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = TopStory()
+            db_story = Story()
     elif list_type == NEW_STORY:
-        db_story = NewStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = NewStory()
+            db_story = Story()
     elif list_type == BEST_STORY:
-        db_story = BestStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = BestStory()
+            db_story = Story()
     elif list_type == ASK_STORY:
-        db_story = AskStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = AskStory()
+            db_story = Story()
     elif list_type == SHOW_STORY:
-        db_story = ShowStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = ShowStory()
+            db_story = Story()
     elif list_type == JOB_STORY:
-        db_story = JobStory.objects.filter(id=id).first()
+        db_story = Story.objects.filter(id=id).first()
         if db_story is None:
-            db_story = JobStory()
+            db_story = Story()
     return db_story
 
 
 def fetch_stories(url: str, list_type):
     stories = requests.get(url).json()
+    # for story in stories[:2]:
     for story in stories:
         console.log(story)
         story_url = STORY_URL.replace('{STORY_ID}', str(story))
@@ -113,11 +117,25 @@ def fetch_stories(url: str, list_type):
         db_story.url = url
         db_story.time = time
         db_story.descendants = descendants
+
+        if list_type == TOP_STORY:
+            db_story.is_top = True
+        elif list_type == NEW_STORY:
+            db_story.is_new = True
+        elif list_type == BEST_STORY:
+            db_story.is_best = True
+        elif list_type == ASK_STORY:
+            db_story.is_ask = True
+        elif list_type == SHOW_STORY:
+            db_story.is_show = True
+        elif list_type == JOB_STORY:
+            db_story.is_job = True
         db_story.save()
 
 def main():
     configure_django()
-    from feed.models import Story, TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
+    from feed.models import Story 
+    # from feed.models import Story , TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
 
     for cfg in ALL_STORIES_URLS:
         url = cfg[0]
