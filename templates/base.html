@@ -34,14 +34,19 @@
             </ul>
         </li> {% endcomment %}
       <a class="nav-link" href="{% url 'feed:index' %}">Home</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">Top</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">Best</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">New</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">Ask</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">Show</a>
-      <a class="nav-link" href="{% url 'feed:index' %}">Job</a>
+      <a class="nav-link" href="{% url 'feed:top_stories' %}">Top</a>
+      <a class="nav-link" href="{% url 'feed:best_stories' %}">Best</a>
+      <a class="nav-link" href="{% url 'feed:new_stories' %}">New</a>
+      <a class="nav-link" href="{% url 'feed:ask_stories' %}">Ask</a>
+      <a class="nav-link" href="{% url 'feed:show_stories' %}">Show</a>
+      <a class="nav-link" href="{% url 'feed:job_stories' %}">Job</a>
       {% if user.is_authenticated %}
       <a class="nav-link" href="{% url 'feed:saved' %}">Saved</a>
+      <a class="nav-link" href="{% url 'feed:hidden' %}">Hidden</a>
+      {% for key in user_keywords %}
+        <a class="nav-link" href="{% url 'feed:custom_stories' key %}">{{key}}</a>
+      {% endfor %}
+      <a class="nav-link" href="{% url 'accounts:user_profile' %}">Profile</a>
       <a class="nav-link" href="{% url 'accounts:logout' %}">Logout ({{ user.username }})</a>
       {% else %}
       <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>

@@ -72,3 +72,29 @@
 	width: 24px;
 	float: right;
 }
+
+.sort-combo {
+	float: center;
+}
+
+.label-username {
+	display: flex;
+	margin: 4px;
+}
+
+.textarea-keywords {
+	display: flex;
+	margin: 4px;
+}
+
+.textarea-keywords {
+	display: flex;
+	margin: 4px;
+	overflow: auto;
+	resize: none;
+}
+
+.max_story-input {
+	display: flex;
+	margin: 4px;
+}

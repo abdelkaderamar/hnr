@@ -1,4 +1,3 @@
-from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -16,9 +15,18 @@ class Story(models.Model):
     is_ask = models.BooleanField(default=False)
     is_show = models.BooleanField(default=False)
     is_job = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.id} | {self.title}"
+
+    def __repr__(self):
+        return self.__str__()
+
     
 class UserStory(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     story = models.ForeignKey(Story, on_delete=models.PROTECT)
     saved = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
+
+

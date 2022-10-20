@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <form style="float" method="post" 
+    action="{% url 'accounts:save_profile' %}" class="inline">
+    {% csrf_token %}
+        <label class="label-username">{{user.username}}</label>
+        <input type="hidden" name="username" value="{{user.username}}">
+        <textarea class="textarea-keywords" 
+            id="keywords-id" name="keywords" cols="64" >{{user_profile.keywords}}</textarea></li>
+        <input class="max_story-input" name="max_story" value={{user_profile.max_story}} />
+
+    <button type="submit" name="save_profile_btn" value="{{story.id}}" class="btn">
+        Save
+    </button>
+</form>
+</div>
+{% endblock content %}

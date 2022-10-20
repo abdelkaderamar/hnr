@@ -89,7 +89,7 @@ def fetch_stories(url: str, list_type):
     stories = requests.get(url).json()
     # for story in stories[:2]:
     for story in stories:
-        console.log(story)
+        # console.log(story)
         story_url = STORY_URL.replace('{STORY_ID}', str(story))
         json_story = requests.get(story_url).json()
         id = json_story['id']
@@ -108,7 +108,7 @@ def fetch_stories(url: str, list_type):
         db_story = get_db_story(list_type, id)
 
         if db_story.id is None:
-            console.log(f"Story {json_story['title']} not found")
+            console.log(f"[red]Adding[/red] [blue]{id}[/blue] {title}")
             db_story.id=id
             db_story.author=author
             db_story.title=title
@@ -141,54 +141,6 @@ def main():
         url = cfg[0]
         list_type = cfg[1]
         fetch_stories(url, list_type)
-    # # json = requests.get(ASK_STORIES_URL).json()
-    # # json = requests.get(TOP_STORIES_URL).json()
-    # json = requests.get(NEW_STORIES_URL).json()
-    # # inspect(json, all=True)
-    # console.print(f'{len(json)} top stories')
-    # top_stories=[s for s in json]
-    # # console.print(top_stories)
-    # count = 0
-    # for db_story in top_stories:
-    #     count += 1
-    #     story_url = STORY_URL.replace('{STORY_ID}', str(db_story))
-    #     json_story = requests.get(story_url).json()
-    #     # console.print(json_story)
-    #     id = json_story['id']
-    #     title = json_story['title']
-    #     author = json_story['title']
-    #     score = json_story['score']
-    #     epoch = json_story['time']
-    #     time = datetime.datetime.fromtimestamp(epoch)
-    #     url = json_story.get('url')
-    #     # console.print(f"(1) Url = |{url}|")
-    #     if url is None:
-    #         url = BASE_URL + str(id)
-    #     # console.print(f"(2) Url = |{url}|")
-    #     descendants = json_story.get('descendants')
-    #     if descendants is None:
-    #         descendants = 0
-    #     console.log(f"{count} {json_story['score']}|{json_story['title']}")
-    #     db_story = Story.objects.filter(id=json_story['id']).first()
-    #     if db_story is None:
-    #         console.log(f"Story {json_story['title']} not found")
-    #         story = Story(
-    #             id=id,
-    #             author=author,
-    #             title=title,
-    #             score=score,
-    #             time=time,
-    #             url=url,
-    #             descendants=descendants
-    #         )
-    #         story.save()
-    #     else:
-    #         db_story.score = score
-    #         db_story.url = url
-    #         db_story.time = time
-    #         db_story.descendants = descendants
-    #         db_story.save()
-
 
 if __name__ == '__main__':
     main()

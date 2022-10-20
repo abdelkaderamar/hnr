@@ -1,10 +1,16 @@
+from ast import keyword
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 
+from rich import inspect
+
 from .forms import UserCreateForm
+from .models import UserProfile
+
 # Create your views here.
 
 def loginaccount(request):   
@@ -46,3 +52,34 @@ def signup(request):
             return render(request, 'accounts/signup.html',
                  {'form':UserCreateForm,
                  'error':'Username already taken. Choose new username.'})
+
+@login_required
+def user_profile(request):
+    user = request.user
+    user_profile = UserProfile.objects.filter(user_id=user.id).first()
+    if user_profile is None:
+        user_profile = UserProfile(user=user, keywords="")
+        user_profile.save()
+    print(user_profile.max_story)
+    context = {
+        'user': user,
+        'user_profile': user_profile,
+    }
+    return render(request, 'accounts/user_profile.html', context)
+
+@login_required
+def save_profile(request):
+    print("Saving the profile")
+    username = request.POST['username']
+    keywords = request.POST['keywords']
+    max_story = int(request.POST['max_story'])
+    inspect(username)
+    inspect(keywords)
+    inspect(max_story)
+    user = request.user
+    user_profile = UserProfile.objects.filter(user_id=user.id).first()
+    user_profile.keywords = keywords
+    user_profile.max_story = max_story
+    user_profile.save()
+    return redirect("accounts:user_profile")
+
