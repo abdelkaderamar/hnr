@@ -15,7 +15,10 @@
 	padding: 10px;
 	font-size: large;
 }
-
+.hn-date {
+	font-family: serif;
+	font-size: small;
+}
 .hn-comment {
 	text-align: center;
 	color: orange;

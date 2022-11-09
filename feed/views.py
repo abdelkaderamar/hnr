@@ -128,7 +128,7 @@ def hide(request, story_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def sort(request, sort_param):
-    if sort_param in ['score', 'descendants']:
+    if sort_param in ['time', 'score', 'descendants']:
         all_stories = Story.objects.all().order_by(f'-{sort_param}')
     elif sort_param == 'ratio':
         all_stories = list(Story.objects.all())

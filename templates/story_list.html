@@ -8,6 +8,7 @@
   <div class='container'>
   <select id='sort-stories-combobox' class="form-select sort-combo" aria-label="Sorting" onchange="sortStories();">
       <option selected>Choose sort factor</option>
+      <option value="time">Time</option>
       <option value="score">Score</option>
       <option value="descendants">Comments</option>
       <option value="ratio">Ratio score/comments</option>
@@ -54,6 +55,7 @@
       </button>
     </form>
     {% endif %}
+    <span class="hn-date">{{user_story.story.time}}</span>
     <a class="hn-comment" href="https://news.ycombinator.com/item?id={{user_story.story.id}}">{{user_story.story.descendants}} Comments</a>
 </li>
 {% endfor %}
@@ -115,6 +117,7 @@
         var selectedValue = sortComboBox[sortComboBox.selectedIndex].value;
         console.log("Selected value " + selectedValue);
         switch (selectedValue) {
+        case 'time':
         case 'score':
         case 'descendants':
         case 'ratio':
