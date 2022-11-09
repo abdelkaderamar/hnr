@@ -90,6 +90,8 @@ def fetch_stories(url: str, list_type):
     # for story in stories[:2]:
     for story in stories:
         # console.log(story)
+        if story is None:
+            continue
         story_url = STORY_URL.replace('{STORY_ID}', str(story))
         json_story = requests.get(story_url).json()
         id = json_story['id']
