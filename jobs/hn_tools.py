@@ -1,10 +1,12 @@
 import requests
-import logging
+import argparse
 from pathlib import Path
 import datetime
+from datetime import datetime, timedelta
 
 import django
 from django.conf import settings
+from django.db.models import Q
 
 from rich import inspect
 from rich.console import Console
@@ -99,7 +101,7 @@ def fetch_stories(url: str, list_type):
         author = json_story['title']
         score = json_story['score']
         epoch = json_story['time']
-        time = datetime.datetime.fromtimestamp(epoch)
+        time = datetime.fromtimestamp(epoch)
         url = json_story.get('url')
         if url is None:
             url = BASE_URL + str(id)
@@ -134,15 +136,45 @@ def fetch_stories(url: str, list_type):
             db_story.is_job = True
         db_story.save()
 
-def main():
-    configure_django()
-    from feed.models import Story 
-    # from feed.models import Story , TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
-
+def import_stories():
     for cfg in ALL_STORIES_URLS:
         url = cfg[0]
         list_type = cfg[1]
         fetch_stories(url, list_type)
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='HN utility program')
+    parser.add_argument('--import', '-i', default=True, action='store_true', dest='import_stories', help='Import HN stories')
+    parser.add_argument('--clean', '-c', default=False, action='store_true', dest='clean', help='Clean old stories')
+    args = parser.parse_args()
+    return args
+
+def clean_stories():
+    from feed.models import Story, UserStory
+    now = datetime.now()
+    old_date = now - timedelta(days=7)
+    old_stories = Story.objects.filter(time__lt=old_date).order_by('time')
+    for s in old_stories:
+        saved_user_stories = UserStory.objects.filter(Q(story_id=s.id) & Q(saved=True))
+        # inspect(saved_user_stories, all=True)
+        if (saved_user_stories.count() == 0):
+            console.print(f"The story {s.title} will be [red]deleted[/red]")
+            UserStory.objects.filter(story_id=s.id).delete()
+            s.delete()
+        else:
+            console.print(f"The story {s.title} is saved {saved_user_stories.count()} times")
+def main():
+    configure_django()
+    # from feed.models import Story 
+    args = parse_arguments()
+    console.print(args)
+
+    # from feed.models import Story , TopStory, BestStory, NewStory, AskStory, ShowStory, JobStory
+
+    if args.import_stories:
+        import_stories()
+    if args.clean:
+        clean_stories()
 
 if __name__ == '__main__':
     main()
