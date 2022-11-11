@@ -152,7 +152,7 @@ def parse_arguments():
 def clean_stories():
     from feed.models import Story, UserStory, ArchiveStory
     now = datetime.now()
-    old_date = now - timedelta(days=1)
+    old_date = now - timedelta(days=7)
     old_stories = Story.objects.filter(time__lt=old_date).order_by('time')
     for s in old_stories:
         saved_user_stories = UserStory.objects.filter(Q(story_id=s.id) & Q(saved=True))
