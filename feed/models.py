@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Story(models.Model):
+class AbstractStory(models.Model):
     id=models.IntegerField(primary_key=True)
     title=models.CharField(max_length=1024, null=False)
     author=models.CharField(max_length=128, null=False)
@@ -16,6 +16,9 @@ class Story(models.Model):
     is_show = models.BooleanField(default=False)
     is_job = models.BooleanField(default=False)
 
+    class Meta:
+        abstract = True
+
     def __str__(self):
         return f"{self.id} | {self.title}"
 
@@ -23,10 +26,18 @@ class Story(models.Model):
         return self.__str__()
 
     
+class Story(AbstractStory):
+    pass
+
+class ArchiveStory(AbstractStory):
+    pass
+
 class UserStory(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     story = models.ForeignKey(Story, on_delete=models.PROTECT)
     saved = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
+
+
 
 

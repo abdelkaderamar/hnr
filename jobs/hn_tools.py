@@ -144,22 +144,37 @@ def import_stories():
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='HN utility program')
-    parser.add_argument('--import', '-i', default=True, action='store_true', dest='import_stories', help='Import HN stories')
+    parser.add_argument('--import', '-i', default=False, action='store_true', dest='import_stories', help='Import HN stories')
     parser.add_argument('--clean', '-c', default=False, action='store_true', dest='clean', help='Clean old stories')
     args = parser.parse_args()
     return args
 
 def clean_stories():
-    from feed.models import Story, UserStory
+    from feed.models import Story, UserStory, ArchiveStory
     now = datetime.now()
-    old_date = now - timedelta(days=7)
+    old_date = now - timedelta(days=1)
     old_stories = Story.objects.filter(time__lt=old_date).order_by('time')
     for s in old_stories:
         saved_user_stories = UserStory.objects.filter(Q(story_id=s.id) & Q(saved=True))
         # inspect(saved_user_stories, all=True)
         if (saved_user_stories.count() == 0):
-            console.print(f"The story {s.title} will be [red]deleted[/red]")
+            console.print(f"The story {s.title} will be [red]moved [/red] to archive")
             UserStory.objects.filter(story_id=s.id).delete()
+            archive_story = ArchiveStory()
+            archive_story.id = s.id
+            archive_story.title = s.title
+            archive_story.author = s.author
+            archive_story.score = s.score
+            archive_story.time = s.time
+            archive_story.url = s.url
+            archive_story.descendants = s.descendants
+            archive_story.is_top = s.is_top
+            archive_story.is_new = s.is_new
+            archive_story.is_best = s.is_best
+            archive_story.is_ask = s.is_ask
+            archive_story.is_show = s.is_show
+            archive_story.is_job = s.is_job
+            archive_story.save()
             s.delete()
         else:
             console.print(f"The story {s.title} is saved {saved_user_stories.count()} times")
