@@ -1,38 +1,31 @@
-.hn-score {
-	text-align: center;
-	color: green;
-	padding: 5px;
-	/* float: inline-end; */
-	/* border-style: solid; */
-	/* border-radius: 5px; */
-	display: inline-block;
-	min-width: 48px;
-	font-family: 'Courier New', Courier, monospace;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&family=Roboto&family=Ubuntu&display=swap');
+.hnr-add-rm-icon {
+    width: auto;
+    display: inline;
+    margin-right: 0.5em;
+    font-size: large;
+}
+.hnr-score {
+    font-family: 'Roboto', sans-serif;
 	font-weight: bolder;
+    width: auto;
+    margin-right: 1em;
 }
 
-.hn-title {
-	padding: 10px;
+.hnr-title {
 	font-size: large;
+    font-family: 'Poppins', sans-serif;
 }
-.hn-date {
-	font-family: serif;
+
+.hnr-date {
+	font-family: 'Ubuntu', sans-serif;
+    margin-right: 0.5em;
 	font-size: small;
 }
 .hn-comment {
 	text-align: center;
-	color: orange;
-	padding: 5px;
-	border-style: solid;
-	border-radius: 5px;
-	float: right;
-	/* display: inline-block; */
-	min-width: 128px;
-	font-size: small;
-}
-
-.hn-add {
-	background: url("/static/images/add.png") 50% 0 no-repeat fixed;
+    margin-right: 0.5em;
+    width: auto;
 }
 
 .inline {
@@ -59,21 +52,6 @@
   
 .link-button:active {
 	color:red;
-}
-
-.add-image {
-	width: 32px;
-	float: right;
-}
-
-.added-image {
-	width: 32px;
-	float: right;
-}
-
-.hide-image {
-	width: 24px;
-	float: right;
 }
 
 .sort-combo {

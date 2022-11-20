@@ -4,8 +4,9 @@
 
 {% block content %}
 
-<div class='container col-12'>
-  <div class='container col-12 col-sm-12 col-md-12'>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-6">
   <select id='sort-stories-combobox' class="form-select sort-combo" aria-label="Sorting" onchange="sortStories();">
       <option selected>Choose sort factor</option>
       <option value="time">Time</option>
@@ -13,39 +14,41 @@
       <option value="descendants">Comments</option>
       <option value="ratio">Ratio score/comments</option>
     </select>
-  {% comment %} </div>
-<div class='container'> {% endcomment %}
+  </div>
+</div>
+<div class="container-fluid">
 <ul class="list-group">
 {% for user_story in stories %}
 <li class="list-group-item">
+  <div class="row">
+  <div class="col-12">
     {% if user.is_authenticated %}
     {% if not user_story.saved %}
     <form style="float" method="post" 
         action="{% url 'feed:save' user_story.story.id %}" class="inline">
         {% csrf_token %}
-        {% comment %} <input type="hidden" name="story_id" value="{{story.id}}"> {% endcomment %}
         <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-            <img class="add-image" src="{% static 'images/add.png' %}"/>
+          <i class="fa-solid fa-square-plus"></i>
         </button>
     </form>
     {% else %}
     <form style="float" method="post" 
         action="{% url 'feed:delete' user_story.story.id %}" class="inline">
         {% csrf_token %}
-        {% comment %} <input type="hidden" name="story_id" value="{{story.id}}"> {% endcomment %}
         <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-            <img class="added-image" src="{% static 'images/added.png' %}"/>
+          <i class="fa-solid fa-square-minus"></i>
         </button>
     </form>
     {% endif %}
     {% endif %}
-    <span class="hn-score">{{user_story.story.score}}</span>
-    <a class="hn-title" href="{{user_story.story.url}}">{{user_story.story.title}}</a>
+    <span class="hnr-score badge bg-primary">{{user_story.story.score}}</span>
+    <span class="hnr-title">
+      <a href="{{user_story.story.url}}">{{user_story.story.title}}</a>
+    </span>
     {% if user.is_authenticated %}
     <form style="float" method="post" 
         action="{% url 'feed:hide' user_story.story.id %}" class="inline2">
         {% csrf_token %}
-        {% comment %} <input type="hidden" name="story_id" value="{{story.id}}"> {% endcomment %}
       <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
         {% if user_story.ignored %}
         <img class="hide-image" src="{% static 'images/show.png' %}"/>
@@ -55,8 +58,17 @@
       </button>
     </form>
     {% endif %}
-    <span class="hn-date">{{user_story.story.time}}</span>
-    <a class="hn-comment" href="https://news.ycombinator.com/item?id={{user_story.story.id}}">{{user_story.story.descendants}} Comments</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-6">
+     <span class="hnr-date border badge bg-secondary">{{user_story.story.time}}</span>
+    <a class="hn-comment" href="https://news.ycombinator.com/item?id={{user_story.story.id}}">
+    <span class="hnr-comment badge bg-success">{{user_story.story.descendants}}</span>
+    <span><i class="fa-solid fa-comments"></i></span>
+    </a>
+  </div>
+</div>
 </li>
 {% endfor %}
 </ul>
