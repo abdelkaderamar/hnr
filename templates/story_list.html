@@ -45,11 +45,11 @@
     <span class="hnr-title">
       <a href="{{user_story.story.url}}">{{user_story.story.title}}</a>
     </span>
-    {% if user.is_authenticated %}
   </div>
 </div>
 <div class="row">
   <div class="col-6">
+    {% if user.is_authenticated %}
     <form style="float" method="post" 
     action="{% url 'feed:hide' user_story.story.id %}" class="inline2">
     {% csrf_token %}
