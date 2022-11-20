@@ -3,7 +3,7 @@
     width: auto;
     display: inline;
     margin-right: 0.5em;
-    font-size: large;
+    font-size: x-large;
 }
 .hnr-score {
     font-family: 'Roboto', sans-serif;
@@ -81,9 +81,11 @@
 }
 
 .hnr-show-icon {
-	color: darkmagenta
+	color: darkmagenta;
+	font-size: x-large;
 }
 
 .hnr-hide-icon {
-	color: crimson
+	color: crimson;
+	font-size: x-large;
 }
