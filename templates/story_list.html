@@ -28,7 +28,7 @@
         action="{% url 'feed:save' user_story.story.id %}" class="inline">
         {% csrf_token %}
         <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-          <i class="fa-solid fa-square-plus"></i>
+          <i class="hnr-add-rm-icon fa-solid fa-square-plus"></i>
         </button>
     </form>
     {% else %}
@@ -46,22 +46,22 @@
       <a href="{{user_story.story.url}}">{{user_story.story.title}}</a>
     </span>
     {% if user.is_authenticated %}
-    <form style="float" method="post" 
-        action="{% url 'feed:hide' user_story.story.id %}" class="inline2">
-        {% csrf_token %}
-      <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-        {% if user_story.ignored %}
-        <img class="hide-image" src="{% static 'images/show.png' %}"/>
-        {% else %}
-        <img class="hide-image" src="{% static 'images/hide.png' %}"/>
-        {% endif %}
-      </button>
-    </form>
-    {% endif %}
   </div>
 </div>
 <div class="row">
   <div class="col-6">
+    <form style="float" method="post" 
+    action="{% url 'feed:hide' user_story.story.id %}" class="inline2">
+    {% csrf_token %}
+  <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
+    {% if user_story.ignored %}
+    <i class="hnr-show-icon fa-solid fa-eye"></i>
+    {% else %}
+    <i class="hnr-hide-icon fa-solid fa-trash"></i>
+    {% endif %}
+  </button>
+</form>
+{% endif %}
      <span class="hnr-date border badge bg-secondary">{{user_story.story.time}}</span>
     <a class="hn-comment" href="https://news.ycombinator.com/item?id={{user_story.story.id}}">
     <span class="hnr-comment badge bg-success">{{user_story.story.descendants}}</span>
