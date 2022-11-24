@@ -38,10 +38,11 @@
 }
 
 .hnr-title {
-	font-size: large;
+	font-size: x-large;
     font-family: 'Poppins', sans-serif;
 	display: inline-flex;
 	padding-bottom: 0.5em;
+	color:black;
 }
 
 .hnr-date {
@@ -109,4 +110,13 @@
 .hnr-hide-icon {
 	color: crimson;
 	font-size: x-large;
+}
+
+.highlighted-story-item {
+	background-color: lightgray;
+	margin-top: 8px;
+}
+
+.story-item {
+	margin-top: 8px;
 }

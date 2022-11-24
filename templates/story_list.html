@@ -19,12 +19,14 @@
 <div class="container-fluid">
 <ul class="list-group">
 {% for user_story in stories %}
-<li class="list-group-item">
+{% if user_story.story.descendants > 10 or user_story.story.score > 10 %}
+<li class="list-group-item highlighted-story-item">
+{% else %}
+<li class="list-group-item story-item">
+{% endif %}
   <div class="row">
       <div class="col">
-        <span class="hnr-title">
-          <a href="{{user_story.story.url}}">{{user_story.story.title}}</a>
-        </span>
+        <a href="{{user_story.story.url}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
       </div>
   </div>
   <div class="row">
