@@ -79,7 +79,7 @@
   <ul class="pagination justify-content-center">
   {% if stories.has_previous %}
   <li class="page-item">
-  <a class="page-link" href="?page={{ stories.previous_page_number }}">Previous</a>
+  <a class="page-link" href="?page={{ stories.previous_page_number }}&order_by={{ order_by }}">Previous</a>
   </li>
   {% else %}
   <li class="page-item disabled">
@@ -88,8 +88,8 @@
   {% endif %}
 
   {% if stories.number|add:'-4' > 1 %}
-  <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
-  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'-5' }}">&hellip;</a></li>
+  <li class="page-item"><a class="page-link" href="?page=1&order_by={{ order_by }}">1</a></li>
+  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'-5' }}&order_by={{ order_by }}">&hellip;</a></li>
   {% endif %}
 
   {% for i in stories.paginator.page_range %}
@@ -101,13 +101,13 @@
     </span>
     </li>
     {% elif i > stories.number|add:'-5' and i < stories.number|add:'5' %}
-    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ i }}&order_by={{ order_by }}">{{ i }}</a></li>
     {% endif %}
   {% endfor %}
 
   {% if stories.paginator.num_pages > stories.number|add:'4' %}
-  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'5' }}">&hellip;</a></li>
-  <li class="page-item"><a class="page-link" href="?page={{ stories.paginator.num_pages }}">{{ stories.paginator.num_pages }}</a></li>
+  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'5' }}&order_by={{ order_by }}">&hellip;</a></li>
+  <li class="page-item"><a class="page-link" href="?page={{ stories.paginator.num_pages }}&order_by={{ order_by }}">{{ stories.paginator.num_pages }}</a></li>
   {% endif %}
 
   {% if stories.has_next %}
@@ -135,7 +135,7 @@
         case 'descendants':
         case 'ratio':
             const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('sort_param', selectedValue);
+            urlParams.set('order_by', selectedValue);
             window.location.search = urlParams;
             break;
         }

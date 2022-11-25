@@ -4,6 +4,8 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
+from collections import OrderedDict
+
 from rich import inspect
 
 from accounts.models import UserProfile
@@ -55,15 +57,25 @@ def get_user_keywords(user):
             user_keywords = user_profile.keywords.split(';')
     return user_keywords
 
+def sort_stories(request, all_stories, sort_param):
+    if sort_param in ['time', 'score', 'descendants']:
+        all_stories = all_stories.order_by(f'-{sort_param}')
+    elif sort_param == 'ratio':
+        all_stories = list(all_stories)
+        all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
+    return all_stories
+
 def get_context(request, all_stories):
-    all_stories = sort_stories(request, all_stories)
-    stories = dict((s.id, user_story_data(s)) for s in all_stories)
+    sort_param = request.GET.get("order_by")
+    all_stories = sort_stories(request, all_stories, sort_param)
+    stories = OrderedDict((s.id, user_story_data(s)) for s in all_stories)
     stories = fill_user_data(stories, request.user)
     stories_page = get_stories_page(request, stories)
     user_keywords = get_user_keywords(request.user)
     context = {
         'stories': stories_page, 
-        'user_keywords': user_keywords
+        'user_keywords': user_keywords,
+        'order_by': sort_param,
     }
     return context
 
@@ -72,14 +84,6 @@ def home(request):
 
 def index(request):
     all_stories = Story.objects.all().order_by('-time')
-    # stories = dict((s.id, user_story_data(s)) for s in all_stories)
-    # stories = fill_user_data(stories, request.user)
-    # stories_page = get_stories_page(request, stories)
-    # user_keywords = get_user_keywords(request.user)
-    # context = {
-    #     'stories': stories_page, 
-    #     'user_keywords': user_keywords
-    # }
     context = get_context(request, all_stories)
     return render(request, 'feed/index.html', context)
 
@@ -143,15 +147,6 @@ def hide(request, story_id):
 #     }
 #     return render(request, 'feed/index.html', context)
 
-def sort_stories(request, all_stories):
-    sort_param = request.GET.get("sort_param")
-    if sort_param in ['time', 'score', 'descendants']:
-        all_stories = all_stories.order_by(f'-{sort_param}')
-    elif sort_param == 'ratio':
-        all_stories = list(all_stories)
-        all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
-    return all_stories
-
 def top_stories(request):
     print(f"request.GET = {request.GET}")
     all_stories = Story.objects.filter(Q(is_top=True)).order_by('-time')
@@ -162,7 +157,6 @@ def top_stories(request):
 
 def best_stories(request):
     all_stories = Story.objects.filter(Q(is_best=True)).order_by('-time')
-    all_stories = sort_stories(request, all_stories)
     context = get_context(request, all_stories)
     return render(request, 'feed/best_stories.html', context)
 
