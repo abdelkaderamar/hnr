@@ -134,7 +134,9 @@
         case 'score':
         case 'descendants':
         case 'ratio':
-            window.location = "/feed/sort/" + selectedValue;
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('sort_param', selectedValue);
+            window.location.search = urlParams;
             break;
         }
     }

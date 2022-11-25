@@ -36,7 +36,7 @@ def fill_user_data(stories, user, include_ignored=False):
         return [s for s in stories.values()]
     user_stories = UserStory.objects.filter(user_id=user.id)
     print(len(user_stories))
-    print(stories)
+    # print(stories)
     for us in user_stories:
         print(f"checking {us.story_id}")
         if us.story_id in stories:
@@ -56,6 +56,7 @@ def get_user_keywords(user):
     return user_keywords
 
 def get_context(request, all_stories):
+    all_stories = sort_stories(request, all_stories)
     stories = dict((s.id, user_story_data(s)) for s in all_stories)
     stories = fill_user_data(stories, request.user)
     stories_page = get_stories_page(request, stories)
@@ -127,34 +128,41 @@ def hide(request, story_id):
     saved_story.save()    
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-def sort(request, sort_param):
+# def sort(request, sort_param):
+#     if sort_param in ['time', 'score', 'descendants']:
+#         all_stories = Story.objects.all().order_by(f'-{sort_param}')
+#     elif sort_param == 'ratio':
+#         all_stories = list(Story.objects.all())
+#         all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
+#     stories = dict((s.id, user_story_data(s)) for s in all_stories)
+#     stories = fill_user_data(stories, request.user)        
+#     stories_page = get_stories_page(request, stories)
+#     context = {
+#         'stories': stories_page, 
+#         'base_url': request.META.get('HTTP_REFERER')
+#     }
+#     return render(request, 'feed/index.html', context)
+
+def sort_stories(request, all_stories):
+    sort_param = request.GET.get("sort_param")
     if sort_param in ['time', 'score', 'descendants']:
-        all_stories = Story.objects.all().order_by(f'-{sort_param}')
+        all_stories = all_stories.order_by(f'-{sort_param}')
     elif sort_param == 'ratio':
-        all_stories = list(Story.objects.all())
+        all_stories = list(all_stories)
         all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
-    stories = dict((s.id, user_story_data(s)) for s in all_stories)
-    stories = fill_user_data(stories, request.user)        
-    stories_page = get_stories_page(request, stories)
-    context = {'stories': stories_page, }
-    return render(request, 'feed/index.html', context)
+    return all_stories
 
 def top_stories(request):
+    print(f"request.GET = {request.GET}")
     all_stories = Story.objects.filter(Q(is_top=True)).order_by('-time')
-    # stories = dict((s.id, user_story_data(s)) for s in all_stories)
-    # stories = fill_user_data(stories, request.user)
-    # stories_page = get_stories_page(request, stories)
-    # context = {'stories': stories_page, }
+    # all_stories = sort_stories(request, all_stories)
     context = get_context(request, all_stories)
     return render(request, 'feed/top_stories.html', context)
 
 
 def best_stories(request):
     all_stories = Story.objects.filter(Q(is_best=True)).order_by('-time')
-    # stories = dict((s.id, user_story_data(s)) for s in all_stories)
-    # stories = fill_user_data(stories, request.user)      
-    # stories_page = get_stories_page(request, stories)
-    # context = {'stories': stories_page, }
+    all_stories = sort_stories(request, all_stories)
     context = get_context(request, all_stories)
     return render(request, 'feed/best_stories.html', context)
 
