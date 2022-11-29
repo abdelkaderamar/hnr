@@ -73,6 +73,19 @@ def save_profile(request):
     username = request.POST['username']
     keywords = request.POST['keywords']
     max_story = int(request.POST['max_story'])
+    save_and_hide = bool(request.POST.get('save_and_hide'))
+    print(f"save_and_hide={save_and_hide}")
+    open_hn_by_default = bool(request.POST.get('open_hn_by_default'))
+    print(f"open_hn_by_default={open_hn_by_default}")
+    default_display_str=(request.POST.get("default_display"))
+    print(f"default_display_str={default_display_str}")
+    if default_display_str == 'recent_stories':
+        default_display = -1
+    elif default_display_str == 'old_stories':
+        default_display = -2
+    else:
+        default_display = 0
+
     inspect(username)
     inspect(keywords)
     inspect(max_story)
@@ -80,6 +93,9 @@ def save_profile(request):
     user_profile = UserProfile.objects.filter(user_id=user.id).first()
     user_profile.keywords = keywords
     user_profile.max_story = max_story
+    user_profile.save_and_hide = save_and_hide
+    user_profile.default_display = default_display
+    user_profile.open_hn_by_default = open_hn_by_default
     user_profile.save()
     return redirect("accounts:user_profile")
 
