@@ -20,6 +20,12 @@ urlpatterns = [
     path('show_stories', views.show_stories, name='show_stories'),
     path('job_stories', views.job_stories, name='job_stories'),
     path('stories/<str:key>', views.custom_stories, name='custom_stories'),
+    path('export', views.export_stories, name='export_stories'),
+    path('clear_saved', views.clear_saved, name='clear_saved'),
+    path('hide_story', views.hide_story, name='hide_story'),
+    path('save_story', views.save_story, name='save_story'),
+    path('delete_story', views.delete_story, name='delete_story'),
+    path('hide_all', views.hide_all, name='hide_all'),
     
  
 ]

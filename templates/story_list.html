@@ -14,19 +14,37 @@
       <option value="descendants">Comments</option>
       <option value="ratio">Ratio score/comments</option>
     </select>
+    </div>
   </div>
+  <div class="row">
+    <div class="col-6">
+    {% if list_type %}
+    {% if list_type == 'saved_stories' %}
+    <button type="button" onclick="exportStories();">Export</button>
+    <button type="button" onclick="clearSaved();">Clear</button>
+    {% else %}
+    <button type="button" onclick="hideAll()" class="btn btn-primary hnr-hide-all-btn">Hide All</button>
+    {% endif %}
+    {% endif %}
+    </div>
 </div>
 <div class="container-fluid">
 <ul class="list-group">
 {% for user_story in stories %}
 {% if user_story.story.descendants > 10 or user_story.story.score > 10 %}
-<li class="list-group-item highlighted-story-item">
+<li class="list-group-item highlighted-story-item" id="{{user_story.story.id}}">
 {% else %}
-<li class="list-group-item story-item">
+<li class="list-group-item story-item" id="{{user_story.story.id}}">
 {% endif %}
   <div class="row">
       <div class="col">
-        <a class="hnr-a" href="{{user_story.story.url}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
+        {%if open_hn %}
+        <a class="hnr-a" id="{{user_story.story.id}}"
+          href="https://news.ycombinator.com/item?id={{user_story.story.id}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
+        {% else %}
+        <a class="hnr-a" id="story-{{user_story.story.id}}" 
+          href="{{user_story.story.url}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
+        {% endif %}
       </div>
   </div>
   <div class="row">
@@ -35,39 +53,26 @@
         <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
         {% if user.is_authenticated %}
         {% if not user_story.saved %}
-        <form style="float" method="post" 
-            action="{% url 'feed:save' user_story.story.id %}" class="form-icon">
-            {% csrf_token %}
-            <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-              <i class="hnr-add-icon fa-solid fa-square-plus fa-xl"></i>
-            </button>
-        </form>
+        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-xl" onclick="saveStory(this)"></i>
         {% else %}
-        <form style="float" method="post" 
-            action="{% url 'feed:delete' user_story.story.id %}" class="form-icon">
-            {% csrf_token %}
-            <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
-              <i class="hnr-del-icon fa-solid fa-square-minus fa-xl"></i>
-            </button>
+          <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-xl" onclick="deleteStory(this)"></i>
         </form>
         {% endif %}
-        <form style="float" method="post" 
-          action="{% url 'feed:hide' user_story.story.id %}" class="form-icon">
-          {% csrf_token %}
-          <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
+        <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
           {% if user_story.ignored %}
-          <i class="hnr-show-icon fa-solid fa-eye fa-xl"></i>
+          <i class="hnr-show-icon fa-solid fa-eye fa-xl" onclick="unhideStory(this)"></i>
           {% else %}
-          <i class="hnr-hide-icon fa-solid fa-trash fa-xl"></i>
+          <i class="hnr-hide-icon fa-solid fa-trash fa-xl" onclick="hideStory(this)"></i>
           {% endif %}
-          </button>
-        </form>
+        </button>
         {% endif %}
         <span class="hnr-comment">
           <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}">
           <i class="fa-solid fa-comments fa-xl"></i>
           </a>
         </span>
+        
+        <span class="hnr-date border badge bg-secondary">{{user_story.story.time|date:'Y-m-d H:i'}}</span>
       </div>
   </div>
   </li>
@@ -124,22 +129,4 @@
 <!--end of Pagination-->
 </div>
 </div>
-<script type="text/javascript">
-    function sortStories() {
-        var sortComboBox = document.getElementById('sort-stories-combobox');
-        var selectedValue = sortComboBox[sortComboBox.selectedIndex].value;
-        console.log("Selected value " + selectedValue);
-        switch (selectedValue) {
-        case 'time':
-        case 'score':
-        case 'descendants':
-        case 'ratio':
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('order_by', selectedValue);
-            window.location.search = urlParams;
-            break;
-        }
-    }
-</script>
-
 {% endblock content %}

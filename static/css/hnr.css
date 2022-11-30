@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&family=Roboto&family=Ubuntu&display=swap');
 
+.link-button {
+	background: none;
+	border: none;
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 1em;
+	font-family: serif;
+}
+
+.link-button:focus {
+	outline: none;
+}
+  
+.link-button:active {
+	color:red;
+}
+
+
 .hnr-add-icon {
 	margin-right: 0.5em;
 	display: inline-block;
@@ -49,6 +68,7 @@
 	font-family: 'Ubuntu', sans-serif;
     margin-right: 0.5em;
 	font-size: small;
+	float: right;
 }
 
 .form-icon {
@@ -59,25 +79,10 @@
 	display: inline;
 }
   
-.link-button {
-	background: none;
-	border: none;
-	color: blue;
-	text-decoration: underline;
-	cursor: pointer;
-	font-size: 1em;
-	font-family: serif;
-  }
-.link-button:focus {
-	outline: none;
-}
-  
-.link-button:active {
-	color:red;
-}
-
 .sort-combo {
 	float: center;
+	margin-left: 10px;
+	
 }
 
 .label-username {
@@ -123,4 +128,10 @@
 
 .hnr-a {
 	text-decoration: none;
+}
+
+.hnr-hide-all-btn {
+	display: flex;
+	float: left;
+	margin: 10px;
 }
