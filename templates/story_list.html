@@ -49,16 +49,22 @@
   </div>
   <div class="row">
       <div class="col">
-        <span class="hnr-score badge bg-primary">{{user_story.story.score}} p</span>
+        <div class="btn-group">
+        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+          <span class="hnr-score badge bg-primary">{{user_story.story.score}} p</span>
+        </button>
+        <button class="hnr-icon-btn btn btn-outline-primary disabled" type="button">
         <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
+        </button>
         {% if user.is_authenticated %}
         {% if not user_story.saved %}
+        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
         <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-xl" onclick="saveStory(this)"></i>
         {% else %}
-          <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-xl" onclick="deleteStory(this)"></i>
-        </form>
+        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-xl" onclick="deleteStory(this)"></i>
+        </button>
         {% endif %}
-        <button type="submit" name="story_id" value="{{story.id}}" class="link-button">
+        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
           {% if user_story.ignored %}
           <i class="hnr-show-icon fa-solid fa-eye fa-xl" onclick="unhideStory(this)"></i>
           {% else %}
@@ -66,13 +72,14 @@
           {% endif %}
         </button>
         {% endif %}
-        <span class="hnr-comment">
+        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+          <span class="hnr-comment">
           <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}">
           <i class="fa-solid fa-comments fa-xl"></i>
           </a>
         </span>
-        
-        <span class="hnr-date border badge bg-secondary">{{user_story.story.time|date:'Y-m-d H:i'}}</span>
+        </div>
+        <span class="hnr-date border badge bg-secondary">{{user_story.story.time|date:'y-m-d H:i'}}</span>
       </div>
   </div>
   </li>
