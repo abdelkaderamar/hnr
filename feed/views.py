@@ -237,12 +237,16 @@ def job_stories(request):
     context['list_type'] = 'job_stories'
     return render(request, 'feed/job_stories.html', context)
 
-@login_required
-def saved(request):
+def get_saved_stories(request):
     all_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
             Q(saved=1))
     stories = dict((s.story.id, user_story_data(s.story)) for s in all_stories)
-    stories = fill_user_data(stories, request.user, include_ignored=True)        
+    stories = fill_user_data(stories, request.user, include_ignored=True)
+    return stories
+
+@login_required
+def saved(request):
+    stories = get_saved_stories(request)
     stories_page = get_stories_page(request, stories)
     user_keywords = get_user_keywords(request.user)
     context = {
@@ -279,8 +283,14 @@ def custom_stories(request, key: str):
 def export_stories(request):
     file_name = os.path.join(settings.MEDIA_ROOT,
                          "test.txt")
+    user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
+            Q(saved=1))
     with open(file_name, 'w') as f:
-        f.write("hello world")
+        for user_story in user_stories:
+            f.write(f"{user_story.story.title}\n")
+            f.write(f"{user_story.story.url}\n")
+            f.write(f"https://news.ycombinator.com/item?id={user_story.story.id}\n")
+            f.write(f"\n")
     return FileResponse(open(file_name, "rb"), as_attachment=True)
 
 @login_required
