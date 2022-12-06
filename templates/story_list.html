@@ -57,8 +57,8 @@
         <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
         </button>
         {% if user.is_authenticated %}
-        {% if not user_story.saved %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+        {% if not user_story.saved %}
         <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-xl" onclick="saveStory(this)"></i>
         {% else %}
         <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-xl" onclick="deleteStory(this)"></i>
