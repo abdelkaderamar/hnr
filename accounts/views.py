@@ -85,6 +85,8 @@ def save_profile(request):
         default_display = -2
     else:
         default_display = 0
+    open_in_new_tab = bool(request.POST.get('open_in_new_tab'))
+    print(f"open_in_new_tab={open_in_new_tab}")
 
     inspect(username)
     inspect(keywords)
@@ -96,6 +98,7 @@ def save_profile(request):
     user_profile.save_and_hide = save_and_hide
     user_profile.default_display = default_display
     user_profile.open_hn_by_default = open_hn_by_default
+    user_profile.open_in_new_tab = open_in_new_tab
     user_profile.save()
     return redirect("accounts:user_profile")
 

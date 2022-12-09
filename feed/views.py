@@ -78,15 +78,19 @@ def get_context(request, all_stories):
     stories_page = get_stories_page(request, stories)
     user_keywords = get_user_keywords(request.user)
     open_hn = False
+    open_in_new_tab = False
     if request.user.is_authenticated:
         user_profile=UserProfile.objects.filter(user_id=request.user.id).first()
         if user_profile:
             open_hn=user_profile.open_hn_by_default
+            open_in_new_tab=user_profile.open_in_new_tab
+
     context = {
         'stories': stories_page, 
         'user_keywords': user_keywords,
         'order_by': sort_param,
         'open_hn': open_hn,
+        'open_in_new_tab': open_in_new_tab,
     }
     return context
 

@@ -26,6 +26,4 @@ urlpatterns = [
     path('save_story', views.save_story, name='save_story'),
     path('delete_story', views.delete_story, name='delete_story'),
     path('hide_all', views.hide_all, name='hide_all'),
-    
- 
 ]

@@ -41,6 +41,12 @@
           {% if user_profile.open_hn_by_default %}checked{% endif %} />
           <label class="form-check-label" for="open_hn_checkbox">Open HN by default</label>
     </div>
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input open_in_new_tab-input" name="open_in_new_tab" 
+          id="open_in_new_tab_checkbox"
+          {% if user_profile.open_in_new_tab %}checked{% endif %} />
+          <label class="form-check-label" for="open_in_new_tab_checkbox">Open link in new tab</label>
+    </div>
     <div class="form-group">
         <button type="submit" name="save_profile_btn" value="{{story.id}}" class="btn btn-primary" >
         Save

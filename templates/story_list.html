@@ -38,13 +38,14 @@
 {% endif %}
   <div class="row">
       <div class="col">
-        {%if open_hn %}
         <a class="hnr-a" id="{{user_story.story.id}}"
-          href="https://news.ycombinator.com/item?id={{user_story.story.id}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
-        {% else %}
-        <a class="hnr-a" id="story-{{user_story.story.id}}" 
-          href="{{user_story.story.url}}"><span class="hnr-title">{{user_story.story.title}}</span></a>
-        {% endif %}
+          {%if open_hn %}
+          href="https://news.ycombinator.com/item?id={{user_story.story.id}}"
+          {% else %}
+          href="{{user_story.story.url}}"
+          {% endif %}
+          {% if open_in_new_tab %} target="_blank"{% endif %}
+        ><span class="hnr-title">{{user_story.story.title}}</span></a>
       </div>
   </div>
   <div class="row">
@@ -74,7 +75,9 @@
         {% endif %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
           <span class="hnr-comment">
-          <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}">
+          <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}"
+              {% if open_in_new_tab %} target="_blank"{% endif %}
+          >
           <i class="fa-solid fa-comments fa-xl"></i>
           </a>
         </span>
