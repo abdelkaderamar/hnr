@@ -54,9 +54,9 @@
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
           <span class="hnr-score badge bg-primary">{{user_story.story.score}} p</span>
         </button>
-        <button class="hnr-icon-btn btn btn-outline-primary disabled" type="button">
+        {% comment %} <button class="hnr-icon-btn btn btn-outline-primary disabled" type="button">
         <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
-        </button>
+        </button> {% endcomment %}
         {% if user.is_authenticated %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
         {% if not user_story.saved %}
@@ -79,8 +79,9 @@
               {% if open_in_new_tab %} target="_blank"{% endif %}
           >
           <i class="fa-solid fa-comments fa-xl"></i>
-          </a>
         </span>
+        <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
+          </a>
         </div>
         <span class="hnr-date border badge bg-secondary">{{user_story.story.time|date:'y-m-d H:i'}}</span>
       </div>
