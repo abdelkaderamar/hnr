@@ -115,8 +115,8 @@ def fetch_stories(url: str, list_type):
             console.log(f"[red]Adding[/red] [blue]{id}[/blue] {title}")
             db_story.id=id
             db_story.author=author
-            db_story.title=title
 
+        db_story.title=title
         db_story.score = score
         db_story.url = url
         db_story.time = time
