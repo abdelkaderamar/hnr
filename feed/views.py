@@ -276,6 +276,7 @@ def hidden(request):
 
 @login_required
 def custom_stories(request, key: str):
+    print(f"Stories for key {key}")
     all_stories = Story.objects.all().order_by('-time')
     inspect(all_stories)
     key = key.lower()

@@ -75,7 +75,7 @@ function doRequest(request_name, request_body) {
         body: request_body,
       });
 }
-async function hideStory(element) {
+async function hideStory(element, hideUrl) {
   console.log("hide story ", element);
   let id = getStoryId(element);
   let body = JSON.stringify({
@@ -83,7 +83,7 @@ async function hideStory(element) {
     hide: true,
   });
 
-  let response = await doRequest("hide_story", body);
+  let response = await doRequest(hideUrl, body);
 
   if (response.status == 200) {
     element.closest("li").hidden = true;
@@ -91,7 +91,7 @@ async function hideStory(element) {
   console.log(response);
 }
 
-async function unhideStory(element) {
+async function unhideStory(element, hideUrl) {
   console.log("unhide story ", element);
   let id = getStoryId(element);
   let body = JSON.stringify({
@@ -99,7 +99,7 @@ async function unhideStory(element) {
     hide: false,
   });
 
-  let response = await doRequest("hide_story", body);
+  let response = await doRequest(hideUrl, body);
 
   if (response.status == 200) {
     element.closest("li").hidden = true;
@@ -107,12 +107,14 @@ async function unhideStory(element) {
   console.log(response);
 }
 
-async function saveStory(element) {
+async function saveStory(element, saveUrl) {
   console.log("save story: ", element);
+  console.log("save url = ", saveUrl);
   let id = getStoryId(element);
+  console.log("Story id = ", id);
   let parent = element.parentNode;
 
-  let response = await doRequest("save_story", JSON.stringify({ id: id }));
+  let response = await doRequest(saveUrl, JSON.stringify({ id: id }));
 
   if (response.status == 200) {
     let hide_element = element.cloneNode(true);
@@ -127,12 +129,13 @@ async function saveStory(element) {
   }
 }
 
-async function deleteStory(element) {
+async function deleteStory(element, deleteUrl) {
   console.log("Delete story: ", element);
+  console.log("Delete url = ", deleteUrl);
   let id = getStoryId(element);
   let parent = element.parentNode;
 
-  let response = await doRequest("delete_story", JSON.stringify({ id: id }));
+  let response = await doRequest(deleteUrl, JSON.stringify({ id: id }));
 
   if (response.status == 200) {
     let save_element = element.cloneNode(true);
