@@ -60,16 +60,16 @@
         {% if user.is_authenticated %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
         {% if not user_story.saved %}
-        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-xl" onclick="saveStory(this, '{% url 'feed:save_story' %}')"></i>
+        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-lg" onclick="saveStory(this, '{% url 'feed:save_story' %}')"></i>
         {% else %}
-        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-xl" onclick="deleteStory(this, '{% url 'feed:delete_story' %}')"></i>
+        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-lg" onclick="deleteStory(this, '{% url 'feed:delete_story' %}')"></i>
         </button>
         {% endif %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
           {% if user_story.ignored %}
-          <i class="hnr-show-icon fa-solid fa-eye fa-xl" onclick="unhideStory(this, '{% url 'feed:hide_story' %}')"></i>
+          <i class="hnr-show-icon fa-solid fa-eye fa-lg" onclick="unhideStory(this, '{% url 'feed:hide_story' %}')"></i>
           {% else %}
-          <i class="hnr-hide-icon fa-solid fa-trash fa-xl" onclick="hideStory(this, '{% url 'feed:hide_story' %}')"></i>
+          <i class="hnr-hide-icon fa-solid fa-trash fa-lg" onclick="hideStory(this, '{% url 'feed:hide_story' %}')"></i>
           {% endif %}
         </button>
         {% endif %}
@@ -78,7 +78,7 @@
           <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}"
               {% if open_in_new_tab %} target="_blank"{% endif %}
           >
-          <i class="fa-solid fa-comments fa-xl"></i>
+          <i class="fa-solid fa-comments fa-lg"></i>
         </span>
         <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
           </a>
