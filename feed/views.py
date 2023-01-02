@@ -9,6 +9,7 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 import os
 import json
+import logging
 
 from rich import inspect
 
@@ -18,6 +19,8 @@ from .task import create_random_user_accounts
 from .models import Story, UserStory
 
 from dataclasses import dataclass
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class user_story_data:
@@ -110,6 +113,12 @@ def home(request):
     return redirect('feed:index')
 
 def index(request):
+    if request.user.is_authenticated:
+        user_profile=UserProfile.objects.filter(user_id=request.user.id).first()
+        if user_profile:
+            startup_page = user_profile.startup_page
+            if startup_page and startup_page.lower() in ['top', 'best', 'ask', 'show', 'new']:
+                return redirect(f'feed:{startup_page}_stories')
     all_stories = Story.objects.all().order_by('-time')
     context = get_context(request, all_stories)
     return render(request, 'feed/index.html', context)
@@ -286,15 +295,18 @@ def custom_stories(request, key: str):
 
 @login_required
 def export_stories(request):
-    file_name = os.path.join(settings.MEDIA_ROOT,
-                         "test.txt")
+    logger.info(f"Exporting saved stories for user {request.user}")
+    now = datetime.now()
+    file_name = os.path.join(settings.EXPORT_DIR,
+                         f"export-{now.strftime('%Y-%m-%d_%H%M')}.txt")
     user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
             Q(saved=1))
     with open(file_name, 'w') as f:
         for user_story in user_stories:
-            f.write(f"{user_story.story.title}\n")
+            f.write(f"{user_story.story.title.encode('ascii', 'ignore').decode('ascii')}\n")
             f.write(f"{user_story.story.url}\n")
             f.write(f"https://news.ycombinator.com/item?id={user_story.story.id}\n")
+            f.write(f"{user_story.story.time}\n")
             f.write(f"\n")
     return FileResponse(open(file_name, "rb"), as_attachment=True)
 
