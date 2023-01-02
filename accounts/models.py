@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     # if True open HN page by default 
     open_hn_by_default = models.BooleanField(default=False)
     open_in_new_tab = models.BooleanField(default=False)
+    startup_page = models.CharField(max_length=128, null=True)
 
     def __str__(self):
         return f"{self.user} | keywords = [{self.keywords}] | save_and_hide = [{self.save_and_hide}] | default_display = [{self.default_display}] "

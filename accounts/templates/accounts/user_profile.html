@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container">
-    <form method="post" 
+    <form method="post" id="profile-form" 
     action="{% url 'accounts:save_profile' %}" class="inline">
     {% csrf_token %}
     <div class="form-group">
@@ -46,6 +46,18 @@
           id="open_in_new_tab_checkbox"
           {% if user_profile.open_in_new_tab %}checked{% endif %} />
           <label class="form-check-label" for="open_in_new_tab_checkbox">Open link in new tab</label>
+    </div>
+    <div class="form-group">
+        <label for="startup_page">Startup page:</label>
+        <select id='startup-page-combobox' class="form-select" aria-label="Startup Page" form="profile-form"
+            name="startup_page" id="startup-page">
+            <option selected>Choose startup page</option>
+            <option value="best" {% if user_profile.startup_page == 'best' %}selected{% endif %} >Best</option>
+            <option value="top" {% if user_profile.startup_page == 'top' %}selected{% endif %} >Top</option>
+            <option value="ask" {% if user_profile.startup_page == 'ask' %}selected{% endif %} >Ask HN</option>
+            <option value="show" {% if user_profile.startup_page == 'show' %}selected{% endif %} >Show HN</option>
+            <option value="new" {% if user_profile.startup_page == 'new' %}selected{% endif %} >New</option>
+        </select>
     </div>
     <div class="form-group">
         <button type="submit" name="save_profile_btn" value="{{story.id}}" class="btn btn-primary" >
