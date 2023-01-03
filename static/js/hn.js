@@ -37,6 +37,7 @@ function getCookie(c_name) {
   return "";
 }
 function hideAll() {
+  console.log("Hide all stories of the current pages")
   let stories = document.getElementsByClassName("hnr-a");
   let ids = [];
   for (s of stories) {

@@ -325,7 +325,7 @@ def hide_all(request):
     ids = body['ids']
     print(f"ids=|{ids}|")
     for story_id in ids:
-        hide_single_story(request.user.id, story_id)
+        hide_single_story(request.user.id, story_id, True)
     print(f"request.META.get('HTTP_REFERER')={request.META.get('HTTP_REFERER')}")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
