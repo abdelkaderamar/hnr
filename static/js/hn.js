@@ -107,7 +107,7 @@ async function unhideStory(element, hideUrl) {
   console.log(response);
 }
 
-async function saveStory(element, saveUrl) {
+async function saveStory(element, saveUrl, deleteUrl) {
   console.log("save story: ", element);
   console.log("save url = ", saveUrl);
   let id = getStoryId(element);
@@ -123,13 +123,13 @@ async function saveStory(element, saveUrl) {
       "class",
       "link-button hnr-del-icon fa-solid fa-square-minus fa-xl"
     );
-    hide_element.setAttribute("onclick", "deleteStory(this)");
+    hide_element.setAttribute("onclick", "deleteStory(this, \"" + deleteUrl + "\", \"" + saveUrl + "\")");
     parent.replaceChild(hide_element, element);
     console.log(response);
   }
 }
 
-async function deleteStory(element, deleteUrl) {
+async function deleteStory(element, deleteUrl, saveUrl) {
   console.log("Delete story: ", element);
   console.log("Delete url = ", deleteUrl);
   let id = getStoryId(element);
@@ -144,7 +144,9 @@ async function deleteStory(element, deleteUrl) {
       "class",
       "link-button hnr-add-icon fa-solid fa-square-plus fa-xl"
     );
-    save_element.setAttribute("onclick", "saveStory(this)");
+    let saveAttr = "saveStory(this, \"" + saveUrl + "\", \"" + deleteUrl + "\")";
+    console.log("saveAttr = ", saveAttr);
+    save_element.setAttribute("onclick", saveAttr);
     parent.replaceChild(save_element, element);
     console.log(response);
   }
