@@ -60,9 +60,11 @@
         {% if user.is_authenticated %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
         {% if not user_story.saved %}
-        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-lg" onclick="saveStory(this, '{% url 'feed:save_story' %}')"></i>
+        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-lg" 
+          onclick="saveStory(this, '{% url 'feed:save_story' %}', '{% url 'feed:delete_story' %}')"></i>
         {% else %}
-        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-lg" onclick="deleteStory(this, '{% url 'feed:delete_story' %}')"></i>
+        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-lg" 
+          onclick="deleteStory(this, '{% url 'feed:delete_story' %}', '{% url 'feed:save_story' %}')"></i>
         </button>
         {% endif %}
         <button class="hnr-icon-btn btn btn-outline-primary" type="button">
