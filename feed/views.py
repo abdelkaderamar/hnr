@@ -36,7 +36,12 @@ class user_story_data:
 
 
 def get_stories_page(request, stories):
-    paginator = Paginator(stories, 25)
+    stories_per_page = UserProfile.STORIES_PER_PAGE
+    if request.user.is_authenticated:
+        user_profile=UserProfile.objects.filter(user_id=request.user.id).first()
+        if user_profile:
+            stories_per_page = user_profile.story_per_page
+    paginator = Paginator(stories, stories_per_page)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
 
