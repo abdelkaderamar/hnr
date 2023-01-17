@@ -82,18 +82,23 @@ def get_context(request, all_stories):
     user_keywords = get_user_keywords(request.user)
     open_hn = False
     open_in_new_tab = False
+    score_threshold = UserProfile.HIGHLIGHT_SCORE_THRESHOLD
+    comment_threshold = UserProfile.HIGHLIGHT_COMMENT_THRESHOLD
     if request.user.is_authenticated:
         user_profile=UserProfile.objects.filter(user_id=request.user.id).first()
         if user_profile:
-            open_hn=user_profile.open_hn_by_default
-            open_in_new_tab=user_profile.open_in_new_tab
-
+            open_hn = user_profile.open_hn_by_default
+            open_in_new_tab = user_profile.open_in_new_tab
+            score_threshold = user_profile.hightlight_score_threshold
+            comment_threshold = user_profile.hightlight_comment_threshold
     context = {
         'stories': stories_page, 
         'user_keywords': user_keywords,
         'order_by': sort_param,
         'open_hn': open_hn,
         'open_in_new_tab': open_in_new_tab,
+        'score_threshold': score_threshold,
+        'comment_threshold': comment_threshold,
     }
     return context
 
@@ -303,13 +308,13 @@ def export_stories(request):
             Q(saved=1))
     with open(file_name, 'w') as f:
         for user_story in user_stories:
-            f.write(f"{user_story.story.title.encode('ascii', 'ignore').decode('ascii')}\n")
+            # f.write(f"{user_story.story.title.encode('ascii', 'ignore').decode('ascii')}\n")
+            f.write(f"{user_story.story.title}\n")
             f.write(f"{user_story.story.url}\n")
             f.write(f"https://news.ycombinator.com/item?id={user_story.story.id}\n")
             f.write(f"{user_story.story.time}\n")
             f.write(f"\n")
     return FileResponse(open(file_name, "rb"), as_attachment=True)
-
 @login_required
 def clear_saved(request):
     all_stories = UserStory.objects.filter(user_id=request.user.id)

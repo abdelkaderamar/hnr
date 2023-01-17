@@ -18,8 +18,16 @@
             id="keywords-id" name="keywords" cols="64" >{{user_profile.keywords}}</textarea></li>
     </div>
     <div class="form-group">
-        <label>Max number of stories</label>
-        <input class="max_story-input" name="max_story" value={{user_profile.max_story}} />
+        <label>Story per page</label>
+        <input class="story_per_page-input" name="story_per_page" value={{user_profile.story_per_page}} />
+    </div>
+    <div class="form-group">
+        <label>Score threshold to highlight</label>
+        <input class="hightlight_score_threshold-input" name="hightlight_score_threshold" value={{user_profile.hightlight_score_threshold}} />
+    </div>
+    <div class="form-group">
+        <label>Score threshold to highlight</label>
+        <input class="hightlight_comment_threshold-input" name="hightlight_comment_threshold" value={{user_profile.hightlight_comment_threshold}} />
     </div>
     <div class="form-check">
         <input type="checkbox" class="form-check-input save_and_hide-input" name="save_and_hide" 

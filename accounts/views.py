@@ -60,7 +60,6 @@ def user_profile(request):
     if user_profile is None:
         user_profile = UserProfile(user=user, keywords="")
         user_profile.save()
-    print(user_profile.max_story)
     context = {
         'user': user,
         'user_profile': user_profile,
@@ -72,7 +71,9 @@ def save_profile(request):
     print("Saving the profile")
     username = request.POST['username']
     keywords = request.POST['keywords']
-    max_story = int(request.POST['max_story'])
+    story_per_page = int(request.POST['story_per_page'])
+    hightlight_score_threshold = int(request.POST['hightlight_score_threshold'])
+    hightlight_comment_threshold = int(request.POST['hightlight_comment_threshold'])
     save_and_hide = bool(request.POST.get('save_and_hide'))
     print(f"save_and_hide={save_and_hide}")
     open_hn_by_default = bool(request.POST.get('open_hn_by_default'))
@@ -92,11 +93,12 @@ def save_profile(request):
 
     inspect(username)
     inspect(keywords)
-    inspect(max_story)
     user = request.user
     user_profile = UserProfile.objects.filter(user_id=user.id).first()
     user_profile.keywords = keywords
-    user_profile.max_story = max_story
+    user_profile.story_per_page = story_per_page
+    user_profile.hightlight_score_threshold = hightlight_score_threshold
+    user_profile.hightlight_comment_threshold = hightlight_comment_threshold
     user_profile.save_and_hide = save_and_hide
     user_profile.default_display = default_display
     user_profile.open_hn_by_default = open_hn_by_default

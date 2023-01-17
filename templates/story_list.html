@@ -31,7 +31,7 @@
 <div class="container-fluid">
 <ul class="list-group">
 {% for user_story in stories %}
-{% if user_story.story.descendants > 10 or user_story.story.score > 10 %}
+{% if user_story.story.descendants > comment_threshold or user_story.story.score > score_threshold %}
 <li class="list-group-item highlighted-story-item" id="{{user_story.story.id}}">
 {% else %}
 <li class="list-group-item story-item" id="{{user_story.story.id}}">
