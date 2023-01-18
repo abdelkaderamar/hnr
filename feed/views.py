@@ -313,8 +313,8 @@ def export_stories(request):
             Q(saved=1))
     with open(file_name, 'w') as f:
         for user_story in user_stories:
-            # f.write(f"{user_story.story.title.encode('ascii', 'ignore').decode('ascii')}\n")
-            f.write(f"{user_story.story.title}\n")
+            f.write(f"{user_story.story.title.encode('ascii', 'ignore').decode('ascii')}\n")
+            # f.write(f"{user_story.story.title}\n")
             f.write(f"{user_story.story.url}\n")
             f.write(f"https://news.ycombinator.com/item?id={user_story.story.id}\n")
             f.write(f"{user_story.story.time}\n")
