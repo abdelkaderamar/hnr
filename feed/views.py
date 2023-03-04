@@ -262,22 +262,24 @@ def job_stories(request):
     return render(request, 'feed/job_stories.html', context)
 
 def get_saved_stories(request):
-    all_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
-            Q(saved=1))
-    stories = dict((s.story.id, user_story_data(s.story)) for s in all_stories)
-    stories = fill_user_data(stories, request.user, include_ignored=True)
+    user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
+            Q(saved=1)).values('story')
+    print(user_stories)
+    stories = Story.objects.filter(pk__in=user_stories)
+    print(stories)
     return stories
 
 @login_required
 def saved(request):
     stories = get_saved_stories(request)
-    stories_page = get_stories_page(request, stories)
-    user_keywords = get_user_keywords(request.user)
-    context = {
-        'stories': stories_page, 
-        'user_keywords': user_keywords,
-        'list_type': 'saved_stories',
-    }
+    context = get_context(request, stories, include_ignored=True)
+    # stories_page = get_stories_page(request, stories)
+    # user_keywords = get_user_keywords(request.user)
+    # context = {
+    #     'stories': stories_page, 
+    #     'user_keywords': user_keywords,
+    #     'list_type': 'saved_stories',
+    # }
     return render(request, 'feed/saved_stories.html', context)
 
 @login_required
@@ -287,14 +289,6 @@ def hidden(request):
     all_stories = Story.objects.filter(pk__in=user_stories)
     print(all_stories)
     context = get_context(request, all_stories, True)
-    # stories = dict((s.story.id, user_story_data(s.story)) for s in all_stories)
-    # stories = fill_user_data(stories, request.user, include_ignored=True)        
-    # stories_page = get_stories_page(request, stories)
-    # user_keywords = get_user_keywords(request.user)
-    # context = {
-    #     'stories': stories_page, 
-    #     'user_keywords': user_keywords
-    # }
     return render(request, 'feed/ignored_stories.html', context)
 
 @login_required
