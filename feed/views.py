@@ -77,12 +77,12 @@ def sort_stories(request, all_stories, sort_param):
         all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
     return all_stories
 
-def get_context(request, all_stories):
+def get_context(request, all_stories, include_ignored=False):
 
     sort_param = request.GET.get("order_by")
     all_stories = sort_stories(request, all_stories, sort_param)
     stories = OrderedDict((s.id, user_story_data(s)) for s in all_stories)
-    stories = fill_user_data(stories, request.user)
+    stories = fill_user_data(stories, request.user, include_ignored=include_ignored)
     stories_page = get_stories_page(request, stories)
     user_keywords = get_user_keywords(request.user)
     open_hn = False
@@ -96,6 +96,7 @@ def get_context(request, all_stories):
             open_in_new_tab = user_profile.open_in_new_tab
             score_threshold = user_profile.hightlight_score_threshold
             comment_threshold = user_profile.hightlight_comment_threshold
+    print(stories_page)
     context = {
         'stories': stories_page, 
         'user_keywords': user_keywords,
@@ -281,16 +282,19 @@ def saved(request):
 
 @login_required
 def hidden(request):
-    all_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
-            Q(ignored=1))
-    stories = dict((s.story.id, user_story_data(s.story)) for s in all_stories)
-    stories = fill_user_data(stories, request.user, include_ignored=True)        
-    stories_page = get_stories_page(request, stories)
-    user_keywords = get_user_keywords(request.user)
-    context = {
-        'stories': stories_page, 
-        'user_keywords': user_keywords
-    }
+    user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
+            Q(ignored=1)).values('story')
+    all_stories = Story.objects.filter(pk__in=user_stories)
+    print(all_stories)
+    context = get_context(request, all_stories, True)
+    # stories = dict((s.story.id, user_story_data(s.story)) for s in all_stories)
+    # stories = fill_user_data(stories, request.user, include_ignored=True)        
+    # stories_page = get_stories_page(request, stories)
+    # user_keywords = get_user_keywords(request.user)
+    # context = {
+    #     'stories': stories_page, 
+    #     'user_keywords': user_keywords
+    # }
     return render(request, 'feed/ignored_stories.html', context)
 
 @login_required
