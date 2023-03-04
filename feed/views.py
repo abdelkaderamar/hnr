@@ -294,10 +294,10 @@ def hidden(request):
 @login_required
 def custom_stories(request, key: str):
     print(f"Stories for key {key}")
-    all_stories = Story.objects.all().order_by('-time')
+    all_stories = Story.objects.filter(title__icontains=key).order_by('-time')
     inspect(all_stories)
     key = key.lower()
-    all_stories = [s for s in all_stories if key in s.title.lower()]
+    # all_stories = [s for s in all_stories if key in s.title.lower()]
     context = get_context(request, all_stories)
     return render(request, 'feed/index.html', context)
 
