@@ -69,18 +69,29 @@ def get_user_keywords(user):
             user_keywords = user_profile.keywords.split(';')
     return user_keywords
 
-def sort_stories(request, all_stories, sort_param):
+def sort_stories(request, all_stories, sort_param, is_ascending):
     if sort_param in ['time', 'score', 'descendants']:
-        all_stories = all_stories.order_by(f'-{sort_param}')
+        if is_ascending:
+            all_stories = all_stories.order_by(f'{sort_param}')
+        else:
+            all_stories = all_stories.order_by(f'-{sort_param}')
     elif sort_param == 'ratio':
         all_stories = list(all_stories)
-        all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
+        if is_ascending:
+            all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=False)
+        else:
+            all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
     return all_stories
 
 def get_context(request, all_stories, include_ignored=False):
 
-    sort_param = request.GET.get("order_by")
-    all_stories = sort_stories(request, all_stories, sort_param)
+    is_ascending = True
+    if request.method == "GET":
+        sort_param = request.GET.get("order_by")
+    elif request.method == "POST":
+        sort_param = request.POST.get("order_by")
+        is_ascending = request.POST.get("sort_way") == "ascending"
+    all_stories = sort_stories(request, all_stories, sort_param, is_ascending)
     stories = OrderedDict((s.id, user_story_data(s)) for s in all_stories)
     stories = fill_user_data(stories, request.user, include_ignored=include_ignored)
     stories_page = get_stories_page(request, stories)
@@ -101,10 +112,12 @@ def get_context(request, all_stories, include_ignored=False):
         'stories': stories_page, 
         'user_keywords': user_keywords,
         'order_by': sort_param,
+        'is_ascending': is_ascending,
         'open_hn': open_hn,
         'open_in_new_tab': open_in_new_tab,
         'score_threshold': score_threshold,
         'comment_threshold': comment_threshold,
+        'story_count': len(stories)
     }
     return context
 
@@ -265,7 +278,7 @@ def get_saved_stories(request):
     user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
             Q(saved=1)).values('story')
     print(user_stories)
-    stories = Story.objects.filter(pk__in=user_stories)
+    stories = Story.objects.filter(pk__in=user_stories).order_by('-time')
     print(stories)
     return stories
 
@@ -273,20 +286,13 @@ def get_saved_stories(request):
 def saved(request):
     stories = get_saved_stories(request)
     context = get_context(request, stories, include_ignored=True)
-    # stories_page = get_stories_page(request, stories)
-    # user_keywords = get_user_keywords(request.user)
-    # context = {
-    #     'stories': stories_page, 
-    #     'user_keywords': user_keywords,
-    #     'list_type': 'saved_stories',
-    # }
     return render(request, 'feed/saved_stories.html', context)
 
 @login_required
 def hidden(request):
     user_stories = UserStory.objects.filter(Q(user_id=request.user.id) &
             Q(ignored=1)).values('story')
-    all_stories = Story.objects.filter(pk__in=user_stories)
+    all_stories = Story.objects.filter(pk__in=user_stories).order_by('-time')
     print(all_stories)
     context = get_context(request, all_stories, True)
     return render(request, 'feed/ignored_stories.html', context)
@@ -299,6 +305,7 @@ def custom_stories(request, key: str):
     key = key.lower()
     # all_stories = [s for s in all_stories if key in s.title.lower()]
     context = get_context(request, all_stories)
+    context["keyword"] = key
     return render(request, 'feed/index.html', context)
 
 @login_required

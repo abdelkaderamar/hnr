@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container-fluid">
-  <div class="row">
+  {% comment %} <div class="row">
     <div class="col-6">
   <select id='sort-stories-combobox' class="form-select sort-combo" aria-label="Sorting" onchange="sortStories();">
       <option selected>Choose sort factor</option>
@@ -15,7 +15,9 @@
       <option value="ratio">Ratio score/comments</option>
     </select>
     </div>
-  </div>
+  </div> {% endcomment %}
+
+
   <div class="row">
     <div class="col-6">
     {% if list_type %}
@@ -28,6 +30,87 @@
     {% endif %}
     </div>
 </div>
+
+{% comment %} <div class="container-fluid d-flex mt-2 mb-2 align-items-center justify-content-center"> {% endcomment %}
+<div class="container-fluid d-flex mt-2 mb-2 align-items-center">
+<div class="me-auto">
+{% if keyword %}
+  {% comment %} <h2><span class="badge bg-secondary">{{keyword}}</span></h2> {% endcomment %}
+  <button type="button" class="btn btn-secondary position-relative">
+    {{keyword}}
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{story_count}}
+      <span class="visually-hidden">unread messages</span>
+    </span>
+  </button>
+{% endif %}
+</div>
+{% comment %} <form method="POST" class="m-3">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort_time" id="sort_time_id" value="time">
+    <label class="form-check-label" for="sort_time_id">Time</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort_score" id="sort_score_id" value="score">
+    <label class="form-check-label" for="sort_score_id">Score</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="sort_comments" id="sort_comments_id" value="comments">
+    <label class="form-check-label" for="sort_comments_id">Comments</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="ascending" id="ascending" value="ascending">
+    <label class="form-check-label" for="ascending">Ascending</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="descending" id="descending" value="descending">
+    <label class="form-check-label" for="descending">Descending</label>
+  </div>
+</form> {% endcomment %}
+<div>
+<form method="POST" class="m-3">
+  {% csrf_token %}
+  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="order_by" id="sort_time" autocomplete="off"  value="time"
+    {% if order_by == 'time' %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_time">Time</label>
+  
+    <input type="radio" class="btn-check" name="order_by" id="sort_score" autocomplete="off" value="score"
+    {% if order_by == 'score' %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_score">Score</label>
+  
+    <input type="radio" class="btn-check" name="order_by" id="sort_comment" autocomplete="off" value="descendants"
+    {% if order_by == 'descendants' %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_comment">Comments</label>
+
+    <input type="radio" class="btn-check" name="order_by" id="sort_ratio" autocomplete="off" value="ratio"
+    {% if order_by == 'ratio' %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_ratio">Ratio Score/Comments</label>
+  </div>
+
+  <div class="btn-group p-2" role="group" aria-label="Basic radio toggle button group">
+    <input type="radio" class="btn-check" name="sort_way" id="sort_ascending" autocomplete="off"  value="ascending"
+    {% if is_ascending == True %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_ascending">Ascending</label>
+  
+    <input type="radio" class="btn-check" name="sort_way" id="sort_descending" autocomplete="off" value="descending"
+    {% if not is_ascending %} checked {% endif %}
+    >
+    <label class="btn btn-outline-primary" for="sort_descending">Descending</label>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Sort</button>
+</form>
+</div>
+
+</div>
+
+
 <div class="container-fluid">
 <ul class="list-group">
 {% for user_story in stories %}
