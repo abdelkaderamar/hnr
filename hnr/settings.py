@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'feed.apps.FeedConfig',
     'accounts.apps.AccountsConfig',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
