@@ -1,228 +1,302 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% load static %}
-
 {% block content %}
-
-<div class="container-fluid">
-  {% comment %} <div class="row">
-    <div class="col-6">
-  <select id='sort-stories-combobox' class="form-select sort-combo" aria-label="Sorting" onchange="sortStories();">
-      <option selected>Choose sort factor</option>
-      <option value="time">Time</option>
-      <option value="score">Score</option>
-      <option value="descendants">Comments</option>
-      <option value="ratio">Ratio score/comments</option>
-    </select>
-    </div>
-  </div> {% endcomment %}
-
-
-  <div class="row">
-    <div class="col-6">
-    {% if list_type %}
-    {% if list_type == 'saved_stories' %}
-    <button type="button" onclick="exportStories();">Export</button>
-    <button type="button" onclick="clearSaved();">Clear</button>
-    {% else %}
-    <button type="button" onclick="hideAll()" class="btn btn-primary hnr-hide-all-btn">Hide All</button>
-    {% endif %}
-    {% endif %}
-    </div>
-</div>
-
-{% comment %} <div class="container-fluid d-flex mt-2 mb-2 align-items-center justify-content-center"> {% endcomment %}
-<div class="container-fluid d-flex mt-2 mb-2 align-items-center">
-<div class="me-auto">
-{% if keyword %}
-  {% comment %} <h2><span class="badge bg-secondary">{{keyword}}</span></h2> {% endcomment %}
-  <button type="button" class="btn btn-secondary position-relative">
-    {{keyword}}
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-      {{story_count}}
-      <span class="visually-hidden">unread messages</span>
-    </span>
-  </button>
-{% endif %}
-</div>
-{% comment %} <form method="POST" class="m-3">
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="sort_time" id="sort_time_id" value="time">
-    <label class="form-check-label" for="sort_time_id">Time</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="sort_score" id="sort_score_id" value="score">
-    <label class="form-check-label" for="sort_score_id">Score</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="sort_comments" id="sort_comments_id" value="comments">
-    <label class="form-check-label" for="sort_comments_id">Comments</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="ascending" id="ascending" value="ascending">
-    <label class="form-check-label" for="ascending">Ascending</label>
-  </div>
-  <div class="form-check form-check-inline">
-    <input class="form-check-input" type="radio" name="descending" id="descending" value="descending">
-    <label class="form-check-label" for="descending">Descending</label>
-  </div>
-</form> {% endcomment %}
-<div>
-<form method="POST" class="m-3">
-  {% csrf_token %}
-  <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-    <input type="radio" class="btn-check" name="order_by" id="sort_time" autocomplete="off"  value="time"
-    {% if order_by == 'time' %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_time">Time</label>
-  
-    <input type="radio" class="btn-check" name="order_by" id="sort_score" autocomplete="off" value="score"
-    {% if order_by == 'score' %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_score">Score</label>
-  
-    <input type="radio" class="btn-check" name="order_by" id="sort_comment" autocomplete="off" value="descendants"
-    {% if order_by == 'descendants' %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_comment">Comments</label>
-
-    <input type="radio" class="btn-check" name="order_by" id="sort_ratio" autocomplete="off" value="ratio"
-    {% if order_by == 'ratio' %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_ratio">Ratio Score/Comments</label>
-  </div>
-
-  <div class="btn-group p-2" role="group" aria-label="Basic radio toggle button group">
-    <input type="radio" class="btn-check" name="sort_way" id="sort_ascending" autocomplete="off"  value="ascending"
-    {% if is_ascending == True %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_ascending">Ascending</label>
-  
-    <input type="radio" class="btn-check" name="sort_way" id="sort_descending" autocomplete="off" value="descending"
-    {% if not is_ascending %} checked {% endif %}
-    >
-    <label class="btn btn-outline-primary" for="sort_descending">Descending</label>
-  </div>
-
-  <button type="submit" class="btn btn-primary">Sort</button>
-</form>
-</div>
-
-</div>
-
-
-<div class="container-fluid">
-<ul class="list-group">
-{% for user_story in stories %}
-{% if user_story.story.descendants > comment_threshold or user_story.story.score > score_threshold %}
-<li class="list-group-item highlighted-story-item" id="{{user_story.story.id}}">
-{% else %}
-<li class="list-group-item story-item" id="{{user_story.story.id}}">
-{% endif %}
-  <div class="row">
-      <div class="col">
-        <a class="hnr-a" id="{{user_story.story.id}}"
-          {%if open_hn %}
-          href="https://news.ycombinator.com/item?id={{user_story.story.id}}"
-          {% else %}
-          href="{{user_story.story.url}}"
-          {% endif %}
-          {% if open_in_new_tab %} target="_blank"{% endif %}
-        ><span class="hnr-title">{{user_story.story.title}}</span></a>
+  <div class="container-fluid">
+    <div class="container-fluid d-flex mt-2 mb-2 align-items-center">
+      <div class="me-auto">
+        {% if keyword %}
+          {% comment %} <h2><span class="badge bg-secondary">{{keyword}}</span></h2> {% endcomment %}
+          <button type="button" class="btn btn-secondary position-relative">
+            {{ keyword }}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ story_count }}
+              <span class="visually-hidden">unread messages</span>
+            </span>
+          </button>
+        {% endif %}
       </div>
-  </div>
-  <div class="row">
-      <div class="col">
-        <div class="btn-group">
-        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
-          <span class="hnr-score badge bg-primary">{{user_story.story.score}} p</span>
-        </button>
-        {% comment %} <button class="hnr-icon-btn btn btn-outline-primary disabled" type="button">
-        <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
-        </button> {% endcomment %}
-        {% if user.is_authenticated %}
-        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
-        {% if not user_story.saved %}
-        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-lg" 
-          onclick="saveStory(this, '{% url 'feed:save_story' %}', '{% url 'feed:delete_story' %}')"></i>
-        {% else %}
-        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-lg" 
-          onclick="deleteStory(this, '{% url 'feed:delete_story' %}', '{% url 'feed:save_story' %}')"></i>
-        </button>
-        {% endif %}
-        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
-          {% if user_story.ignored %}
-          <i class="hnr-show-icon fa-solid fa-eye fa-lg" onclick="unhideStory(this, '{% url 'feed:hide_story' %}')"></i>
+    </div>
+    <div class="container-fluid">
+      <ul class="list-group">
+        {% for user_story in stories %}
+          <li {% if user_story.story.descendants > comment_threshold or user_story.story.score > score_threshold %} class="list-group-item highlighted-story-item" {% else %} class="list-group-item story-item" {% endif %}
+              id="{{ user_story.story.id }}">
+            <div class="row">
+              <div class="col">
+                <a class="hnr-a"
+                   id="{{ user_story.story.id }}"
+                   {% if open_hn %} href="https://news.ycombinator.com/item?id={{ user_story.story.id }}" {% else %} href="{{ user_story.story.url }}" {% endif %}
+                   {% if open_in_new_tab %} target="_blank"{% endif %}><span class="hnr-title">{{ user_story.story.title }}</span></a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="btn-group">
+                  <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+                    <span class="hnr-score badge bg-primary">{{ user_story.story.score }} p</span>
+                  </button>
+                  {% if user.is_authenticated %}
+                    <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+                      {% if not user_story.saved %}
+                        <i class="link-button hnr-add-icon fa-solid fa-square-plus fa-lg"
+                           onclick="saveStory(this, '{% url 'feed:save_story' %}', '{% url 'feed:delete_story' %}')"></i>
+                      {% else %}
+                        <i class="link-button hnr-del-icon fa-solid fa-square-minus fa-lg"
+                           onclick="deleteStory(this, '{% url 'feed:delete_story' %}', '{% url 'feed:save_story' %}')"></i>
+                      </button>
+                    {% endif %}
+                    <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+                      {% if user_story.ignored %}
+                        <i class="hnr-show-icon fa-solid fa-eye fa-lg"
+                           onclick="unhideStory(this, '{% url 'feed:hide_story' %}')"></i>
+                      {% else %}
+                        <i class="hnr-hide-icon fa-solid fa-trash fa-lg"
+                           onclick="hideStory(this, '{% url 'feed:hide_story' %}')"></i>
+                      {% endif %}
+                    </button>
+                  {% endif %}
+                  <button class="hnr-icon-btn btn btn-outline-primary" type="button">
+                    <span class="hnr-comment">
+                      <a href="https://news.ycombinator.com/item?id={{ user_story.story.id }}"
+                         {% if open_in_new_tab %} target="_blank"{% endif %}>
+                        <i class="fa-solid fa-comments fa-lg"></i>
+                        <span class="hnr-comment badge bg-success">{{ user_story.story.descendants }} c</span>
+                      </a>
+                    </span>
+                  </button>
+                </div>
+                <span class="hnr-date border badge bg-secondary">{{ user_story.story.time|date:'y-m-d H:i' }}</span>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <!--Pagination-->
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          {% if stories.has_previous %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ stories.previous_page_number }}&order_by={{ order_by }}">Previous</a>
+            </li>
           {% else %}
-          <i class="hnr-hide-icon fa-solid fa-trash fa-lg" onclick="hideStory(this, '{% url 'feed:hide_story' %}')"></i>
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+            </li>
           {% endif %}
-        </button>
-        {% endif %}
-        <button class="hnr-icon-btn btn btn-outline-primary" type="button">
-          <span class="hnr-comment">
-          <a  href="https://news.ycombinator.com/item?id={{user_story.story.id}}"
-              {% if open_in_new_tab %} target="_blank"{% endif %}
-          >
-          <i class="fa-solid fa-comments fa-lg"></i>
-        </span>
-        <span class="hnr-comment badge bg-success">{{user_story.story.descendants}} c</span>
-          </a>
+          {% if stories.number|add:'-4' > 1 %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1&order_by={{ order_by }}">1</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ stories.number|add:'-5' }}&order_by={{ order_by }}">...</a>
+            </li>
+          {% endif %}
+          {% for i in stories.paginator.page_range %}
+            {% if stories.number == i %}
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">
+                  {{ i }}
+                  <span class="sr-only">(current)</span>
+                </span>
+              </li>
+            {% elif i > stories.number|add:'-5' and i < stories.number|add:'5' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ i }}&order_by={{ order_by }}">{{ i }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+          {% if stories.paginator.num_pages > stories.number|add:'4' %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ stories.number|add:'5' }}&order_by={{ order_by }}">...</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ stories.paginator.num_pages }}&order_by={{ order_by }}">{{ stories.paginator.num_pages }}</a>
+            </li>
+          {% endif %}
+          {% if stories.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ stories.next_page_number }}">Next</a>
+            </li>
+          {% else %}
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+      <!--end of Pagination-->
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="false"
+                    aria-controls="collapseOne">
+              Sorting
+            </button>
+          </h2>
+          <div id="collapseOne"
+               class="accordion-collapse collapse"
+               aria-labelledby="headingOne"
+               data-bs-parent="#accordionExample">
+            <div class="accordion-body p-1 d-flex justify-content-start">
+              <form method="post">
+                {% csrf_token %}
+                <div class="container-fluid d-flex flex-row row">
+                  <div class="border d-flex flex-wrap m-1 p-1 rounded">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="order_by"
+                             id="sort_time_id"
+                             value="time"
+                             {% if order_by == 'time' %} checked{% endif %}/>
+                      <label class="form-check-label" for="sort_time_id">Time</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="order_by"
+                             id="sort_score_id"
+                             value="score"
+                             {% if order_by == 'score' %} checked{% endif %}/>
+                      <label class="form-check-label" for="sort_score_id">Score</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="order_by"
+                             id="sort_comments_id"
+                             value="descendants"
+                             {% if order_by == 'descendants' %} checked{% endif %}/>
+                      <label class="form-check-label" for="sort_comments_id">Comments</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="order_by"
+                             id="sort_ratio_id"
+                             value="ratio"
+                             {% if order_by == 'ratio' %} checked{% endif %}/>
+                      <label class="form-check-label" for="sort_ratio_id">Ratio (Sco/Com)</label>
+                    </div>
+                  </div>
+                  <div class="border d-flex flex-wrap m-1 p-1 rounded">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="sort_way"
+                             id="descending"
+                             value="descending"
+                             {% if is_ascending == False %} checked{% endif %}/>
+                      <label class="form-check-label" for="descending">Descending</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input"
+                             type="radio"
+                             name="sort_way"
+                             id="ascending"
+                             value="ascending"
+                             {% if is_ascending == True %} checked{% endif %}/>
+                      <label class="form-check-label" for="ascending">Ascending</label>
+                    </div>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <button type="submit" class="btn btn-primary">Sort</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <span class="hnr-date border badge bg-secondary">{{user_story.story.time|date:'y-m-d H:i'}}</span>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo">
+              Operations
+            </button>
+          </h2>
+          <div id="collapseTwo"
+               class="accordion-collapse collapse"
+               aria-labelledby="headingTwo"
+               data-bs-parent="#accordionExample">
+            <div class="accordion-body p-1 d-flex flex-wrap justify-content-start">
+              <div class="container-fluid g-1">
+                {% if list_type %}
+                  {% if list_type == 'saved_stories' %}
+                    <form method="post" action="{% url 'feed:export_stories' %}">
+                      {% csrf_token %}
+                      <div class="container-fluid">
+                        <div class="border d-flex flex-wrap m-1 p-1 rounded">
+                          <div class="form-check form-check-inline align-self-center">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="export_format"
+                                   id="export_text"
+                                   value="text"
+                                   checked/>
+                            <label class="form-check-label" for="export_text">Text</label>
+                          </div>
+                          <div class="form-check form-check-inline align-self-center">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="export_format"
+                                   id="sort_markdown_id"
+                                   value="markdown"/>
+                            <label class="form-check-label" for="sort_markdown_id">
+                              Markdown
+                            </label>
+                          </div>
+                          <div class="form-check form-check-inline align-self-center">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="export_format"
+                                   id="sort_yaml_id"
+                                   value="yaml"/>
+                            <label class="form-check-label" for="sort_yaml_id">
+                              Yaml
+                            </label>
+                          </div>
+                          <div class="form-check form-check-inline g-1">
+                            <button type="submit" class="btn btn-secondary">
+                              Export
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="col">
+                    <button type="button"
+                            class="btn btn-warning hnr-hide-all-btn"
+                            onclick="clearSaved();">
+                      Clear
+                    </button>
+                  </div>
+                {% else %}
+                  <div class="col">
+                    <button type="button"
+                            onclick="hideAll()"
+                            class="btn btn-warning hnr-hide-all-btn">
+                      Hide All
+                    </button>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
       </div>
+    </div>
   </div>
-  </li>
-{% endfor %}
-</ul>
-
-<!--Pagination-->
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-  {% if stories.has_previous %}
-  <li class="page-item">
-  <a class="page-link" href="?page={{ stories.previous_page_number }}&order_by={{ order_by }}">Previous</a>
-  </li>
-  {% else %}
-  <li class="page-item disabled">
-  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
-  </li>
-  {% endif %}
-
-  {% if stories.number|add:'-4' > 1 %}
-  <li class="page-item"><a class="page-link" href="?page=1&order_by={{ order_by }}">1</a></li>
-  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'-5' }}&order_by={{ order_by }}">&hellip;</a></li>
-  {% endif %}
-
-  {% for i in stories.paginator.page_range %}
-    {% if stories.number == i %}
-    <li class="page-item active" aria-current="page">
-      <span class="page-link">
-      {{ i }}
-      <span class="sr-only">(current)</span>
-    </span>
-    </li>
-    {% elif i > stories.number|add:'-5' and i < stories.number|add:'5' %}
-    <li class="page-item"><a class="page-link" href="?page={{ i }}&order_by={{ order_by }}">{{ i }}</a></li>
-    {% endif %}
-  {% endfor %}
-
-  {% if stories.paginator.num_pages > stories.number|add:'4' %}
-  <li class="page-item"><a class="page-link" href="?page={{ stories.number|add:'5' }}&order_by={{ order_by }}">&hellip;</a></li>
-  <li class="page-item"><a class="page-link" href="?page={{ stories.paginator.num_pages }}&order_by={{ order_by }}">{{ stories.paginator.num_pages }}</a></li>
-  {% endif %}
-
-  {% if stories.has_next %}
-  <li class="page-item">
-  <a class="page-link" href="?page={{ stories.next_page_number }}">Next</a>
-  </li>
-  {% else %}
-  <li class="page-item disabled">
-  <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
-  </li>
-  {% endif %}
-  </ul>
-</nav>
-<!--end of Pagination-->
-</div>
-</div>
 {% endblock content %}

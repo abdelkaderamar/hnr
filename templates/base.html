@@ -1,27 +1,28 @@
 {% load static %}
   
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Hackernews Reader</title>
-  <meta name="Hackernews Reader" content="">
-  <meta name="Abdelkader Amar" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="Hackernews Reader" content="" />
+  <meta name="Abdelkader Amar" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Hackernews reader" />
+  <meta name="keywords" content="Hackenews,Links" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   {% load bootstrap5 %}
   {% bootstrap_css %}
   {% bootstrap_javascript %}
-  <link href="{% static 'css/hnr.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/hnr.css' %}" rel="stylesheet" type="text/css" />
   <script src="https://kit.fontawesome.com/3194773cc3.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro">  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro" />  
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid p-1">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="navbar-collapse" id="navbarSupportedContent">
 
     <ul class="nav bg-light me-auto">
       <li class="nav-item"><a class="nav-link" href="{% url 'feed:index' %}">Home</a></li>
@@ -36,7 +37,7 @@
           <li><a class="nav-link" href="{% url 'feed:ask_stories' %}">Ask</a></li>
           <li><a class="nav-link" href="{% url 'feed:show_stories' %}">Show</a></li>
           <li><a class="nav-link" href="{% url 'feed:job_stories' %}">Job</a></li>
-          <li><hr class="dropdown-divider"></li>
+          <li><hr class="dropdown-divider"/></li>
         </ul>
       </li>
       {% if user.is_authenticated %}
@@ -55,7 +56,7 @@
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
         {% for key in user_keywords %}
-        <li><a class="nav-link" href="{% url 'feed:custom_stories' key %}">{{key}}</a></li>
+        <li><a class="nav-link" href="{% url 'feed:custom_stories' key %}">{{ key }} </a></li>
         {% endfor %}
         </ul>
       </li>
@@ -68,10 +69,10 @@
     </ul>
     <ul class="nav bg-light">
       <li class="nav-item">
-        <form class="d-flex" action="{% url 'feed:index' %}" method="POST">
+        <form class="d-flex" action="{% url 'feed:search' %}" method="post">
             {% csrf_token %}
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
-                name="keyword" value="{{keyword}}">
+                name="keyword" value="{{ search_keyword }}" />
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
       </li>

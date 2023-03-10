@@ -4,13 +4,14 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect, FileResponse, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.utils.http import urlencode
 
 from collections import OrderedDict
 from datetime import datetime, timedelta
 import os
 import json
 import logging
-
+from functools import reduce
 from rich import inspect
 
 from accounts.models import UserProfile
@@ -85,7 +86,7 @@ def sort_stories(request, all_stories, sort_param, is_ascending):
 
 def get_context(request, all_stories, include_ignored=False):
 
-    is_ascending = True
+    is_ascending = None
     if request.method == "GET":
         sort_param = request.GET.get("order_by")
     elif request.method == "POST":
@@ -240,6 +241,7 @@ def top_stories(request):
     all_stories = Story.objects.filter(Q(is_top=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'top_stories'
+    context['keyword'] = 'Top Stories'
     return render(request, 'feed/top_stories.html', context)
 
 
@@ -247,6 +249,7 @@ def best_stories(request):
     all_stories = Story.objects.filter(Q(is_best=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'best_stories'
+    context['keyword'] = 'Best Stories'
     return render(request, 'feed/best_stories.html', context)
 
 
@@ -254,24 +257,28 @@ def new_stories(request):
     all_stories = Story.objects.filter(Q(is_new=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'new_stories'
+    context['keyword'] = 'Newest Stories'
     return render(request, 'feed/new_stories.html', context)
 
 def ask_stories(request):
     all_stories = Story.objects.filter(Q(is_ask=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'ask_stories'
+    context['keyword'] = 'Ask Stories'
     return render(request, 'feed/ask_stories.html', context)
 
 def show_stories(request):
     all_stories = Story.objects.filter(Q(is_show=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'show_stories'
+    context['keyword'] = 'Show Stories'
     return render(request, 'feed/show_stories.html', context)
 
 def job_stories(request):
     all_stories = Story.objects.filter(Q(is_job=True)).order_by('-time')
     context = get_context_for_section(request, all_stories)
     context['list_type'] = 'job_stories'
+    context['keyword'] = 'Job Stories'
     return render(request, 'feed/job_stories.html', context)
 
 def get_saved_stories(request):
@@ -286,6 +293,8 @@ def get_saved_stories(request):
 def saved(request):
     stories = get_saved_stories(request)
     context = get_context(request, stories, include_ignored=True)
+    context['list_type'] = 'saved_stories'
+    context['keyword'] = 'Saved Stories'
     return render(request, 'feed/saved_stories.html', context)
 
 @login_required
@@ -306,6 +315,7 @@ def custom_stories(request, key: str):
     # all_stories = [s for s in all_stories if key in s.title.lower()]
     context = get_context(request, all_stories)
     context["keyword"] = key
+    context["list_type"] = 'keyword_stories'
     return render(request, 'feed/index.html', context)
 
 @login_required
@@ -379,3 +389,23 @@ def delete_story(request):
         return HttpResponse()
     except:
         return HttpResponse(status=400)
+
+def search(request):
+    all_stories = Story.objects.all().order_by('-time')
+    if request.method == 'POST':
+        keyword = request.POST.get("keyword")
+    else:
+        keyword = request.GET.get("keyword")
+    search_words = keyword.split(' ')
+    print(f"Search words = {search_words}")
+    # Doesn't work with word like C++
+    # search_words = re.split('\W+', keyword)
+    # print(search_words)
+    query = reduce(lambda q, word: q & Q(title__icontains=word), search_words, Q())
+    print(f"Keyword = {keyword}")
+    # all_links = all_links.filter(title__icontains=keyword)
+    all_stories = all_stories.filter(query)
+    context = get_context(request, all_stories)
+    context['keyword'] = keyword
+    context['search_keyword'] = keyword
+    return render(request, "feed/search.html", context)
