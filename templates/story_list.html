@@ -207,6 +207,9 @@
                       <label class="form-check-label" for="ascending">Ascending</label>
                     </div>
                   </div>
+                  {% if search_keyword %}
+                  <input type="hidden" name="keyword" value="{{ search_keyword }}"/>
+                  {% endif %}
                   <div class="form-check form-check-inline">
                     <button type="submit" class="btn btn-primary">Sort</button>
                   </div>
