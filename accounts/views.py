@@ -7,8 +7,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 
 from rich import inspect
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from decouple import config
 
-from .forms import UserCreateForm
+from .forms import SignupForm
 from .models import UserProfile
 
 # Create your views here.
@@ -33,25 +37,50 @@ def logoutaccount(request):
     logout(request)
     return redirect('home')
 
+def send_mail(user):
+    app_secret = config("MAIL_SECRET")
+    username = config("MAIL_USER")
+    smtp_server = config("SMTP_HOST")
+    smtp_port = config("SMTP_PORT")
+    recipient = config("RECIPIENT")
+    print(f'{username} | {app_secret} | {smtp_server}:{smtp_port} | {recipient}')
+
+    # create a message
+    msg = MIMEMultipart()
+    msg['From'] = username
+    msg['To'] = recipient
+    msg['Subject'] = '[KOPIKOL] A new user signup'
+    body = f'A new user has registered. Username = {user.username}'
+    msg.attach(MIMEText(body, 'plain'))
+
+    # send the message
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(username, app_secret)
+        server.sendmail(username, recipient, msg.as_string())
+
 def signup(request):
     if request.method == 'GET':
-        context = {'form': UserCreateForm}
+        context = {'form': SignupForm}
         return render(request, 'accounts/signup.html', context)
     else:
         try:
             if request.POST['password1'] == request.POST['password2']:
                 user = User.objects.create_user(request.POST['username'],
-                        password=request.POST['password1'])
+                        password=request.POST['password1'], is_active=False)
                 user.save()
-                login(request, user)
-                return redirect('home')
+                # login(request, user)
+                send_mail(user)
+                return render(request, 'accounts/signup.html',
+                    {'form': SignupForm, 'success':'User created but needs to be validated by an admin before being able to connect'})
             else:
                 return render(request, 'accounts/signup.html',
-                    {'form':UserCreateForm, 'error':'Passwords do not match'})
+                    {'form': SignupForm, 'error':'Passwords do not match'})
         except IntegrityError:
             return render(request, 'accounts/signup.html',
-                 {'form':UserCreateForm,
+                 {'form': SignupForm,
                  'error':'Username already taken. Choose new username.'})
+
 
 @login_required
 def user_profile(request):
