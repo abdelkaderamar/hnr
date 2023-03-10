@@ -16,7 +16,7 @@ from rich import inspect
 
 from accounts.models import UserProfile
 
-from .models import Story, UserStory
+from .models import Story, UserStory, DefaultConfig
 
 from dataclasses import dataclass
 
@@ -67,6 +67,8 @@ def get_user_keywords(user):
         user_profile = UserProfile.objects.filter(user_id = user.id).first()
         if user_profile is not None:
             user_keywords = user_profile.keywords.split(';')
+    else:
+        user_keywords = DefaultConfig.objects.filter(key='keywords').first().value.split(';')
     return user_keywords
 
 def sort_stories(request, all_stories, sort_param, is_ascending):
@@ -305,7 +307,7 @@ def hidden(request):
     context = get_context(request, all_stories, True)
     return render(request, 'feed/ignored_stories.html', context)
 
-@login_required
+# @login_required
 def custom_stories(request, key: str):
     print(f"Stories for key {key}")
     all_stories = Story.objects.filter(title__icontains=key).order_by('-time')

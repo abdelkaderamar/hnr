@@ -38,6 +38,9 @@ class UserStory(models.Model):
     saved = models.BooleanField(default=False)
     ignored = models.BooleanField(default=False)
 
+class DefaultConfig(models.Model):
+    key = models.CharField(max_length=32, null=False)
+    value = models.CharField(max_length=256, null=False)
 
 
 
