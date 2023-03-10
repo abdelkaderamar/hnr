@@ -49,7 +49,7 @@ def send_mail(user):
     msg = MIMEMultipart()
     msg['From'] = username
     msg['To'] = recipient
-    msg['Subject'] = '[KOPIKOL] A new user signup'
+    msg['Subject'] = '[HNR] A new user signup'
     body = f'A new user has registered. Username = {user.username}'
     msg.attach(MIMEText(body, 'plain'))
 
