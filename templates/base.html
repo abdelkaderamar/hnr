@@ -40,6 +40,16 @@
           <li><hr class="dropdown-divider"/></li>
         </ul>
       </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Keywords
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        {% for key in user_keywords %}
+        <li><a class="nav-link" href="{% url 'feed:custom_stories' key %}">{{ key }} </a></li>
+        {% endfor %}
+        </ul>
+      </li>
       {% if user.is_authenticated %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -53,16 +63,6 @@
       <li class="nav-item"><a class="nav-link" href="{% url 'accounts:user_profile' %}">Profile</a></li>
       <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">Logout ({{ user.username }})</a></li>
       {% else %}
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Keywords
-        </a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-        {% for key in user_keywords %}
-        <li><a class="nav-link" href="{% url 'feed:custom_stories' key %}">{{ key }} </a></li>
-        {% endfor %}
-        </ul>
-      </li>
       <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">Login</a></li>
       <li class="nav-item"><a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a></li>
       {% endif %}
