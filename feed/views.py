@@ -16,7 +16,6 @@ from rich import inspect
 
 from accounts.models import UserProfile
 
-from .task import create_random_user_accounts
 from .models import Story, UserStory
 
 from dataclasses import dataclass
