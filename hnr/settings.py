@@ -161,4 +161,7 @@ LOGGING = {
     },
 }
 
+SESSION_COOKIE_SECURE = True 
+CSRF_COOKIE_SECURE = True
+
 EXPORT_DIR = os.path.join(BASE_DIR, 'export')
