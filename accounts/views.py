@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from decouple import config
 
-from .forms import SignupForm
+from .forms import SignupForm, LoginForm
 from .models import UserProfile
 
 # Create your views here.
@@ -21,13 +21,13 @@ def loginaccount(request):
     print(f"#### {request.method}") 
     if request.method == 'GET':
         return render(request, 'accounts/login.html',
-             {'form':AuthenticationForm})            
+             {'form':LoginForm})            
     else:
         user = authenticate(request, username=request.POST['username'],
         password=request.POST['password'])            
         if user is None:                                
             return render(request,'accounts/login.html',
-                        {'form': AuthenticationForm(),
+                        {'form': LoginForm(),
                             'error': 'username and password do not match'})
         else:
             login(request,user)
@@ -84,6 +84,10 @@ def signup(request):
 
 @login_required
 def user_profile(request):
+    success_msg = None
+    if request.method == "POST":
+        save_profile(request)
+        success_msg = "User profile updated"
     user = request.user
     user_profile = UserProfile.objects.filter(user_id=user.id).first()
     if user_profile is None:
@@ -92,6 +96,7 @@ def user_profile(request):
     context = {
         'user': user,
         'user_profile': user_profile,
+        'success_msg': success_msg,
     }
     return render(request, 'accounts/user_profile.html', context)
 
