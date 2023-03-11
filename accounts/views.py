@@ -100,7 +100,6 @@ def user_profile(request):
     }
     return render(request, 'accounts/user_profile.html', context)
 
-@login_required
 def save_profile(request):
     print("Saving the profile")
     username = request.POST['username']
