@@ -1,92 +1,134 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
-<div class="container p-3 mt-3">
-    {% if error_msg %}<div class="alert alert-danger mt-3" role="alert">{{ error_msg }}</div>{% endif %}
-    {% if success_msg %}<div class="alert alert-success mt-3" role="alert">{{ success_msg }}</div>{% endif %}
-    <form method="post" id="profile-form" class="inline">
-    {% csrf_token %}
-    <div class="form-group mb-3">
-        <label class="form-label" for="id_username">Username</label>
-        <input class="form-control" id="id_username"  type="text" value="{{ user.username }}" aria-label="readonly input example" readonly>
-        <input type="hidden" name="username" value="{{ user.username }}" class="form-control"/>
-    </div>
-    <div class="form-group mb-3">
-        <label class="form-label" for="keywords-id">Keywords</label>
-        <textarea class="form-control" 
-            id="keywords-id" name="keywords" cols="64" >{{user_profile.keywords}}</textarea></li>
-    </div>
-    <div class="form-group mb-3 row">
-        <div class="col-sm-6 row">
-            <label class="col-sm-6 col-form-label" for="">Stories per page</label>
-            <div class="col-sm-6">
-                <input class="col-sm-6 form-control" name="story_per_page" value={{ user_profile.story_per_page }} />
+    <div class="container p-3 mt-3">
+        {% if error_msg %}<div class="alert alert-danger mt-3" role="alert">{{ error_msg }}</div>{% endif %}
+        {% if success_msg %}<div class="alert alert-success mt-3" role="alert">{{ success_msg }}</div>{% endif %}
+        <form method="post" id="profile-form" class="inline">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                <label class="form-label" for="id_username">Username</label>
+                <input class="form-control"
+                       id="id_username"
+                       type="text"
+                       value="{{ user.username }}"
+                       aria-label="readonly input example"
+                       readonly>
+                <input type="hidden"
+                       name="username"
+                       value="{{ user.username }}"
+                       class="form-control"/>
+            </div>
+            <div class="form-group mb-3">
+                <label class="form-label" for="keywords-id">Keywords</label>
+                <textarea class="form-control" id="keywords-id" name="keywords" cols="64">{{user_profile.keywords}}</textarea>
+            </li>
+        </div>
+        <div class="form-group mb-3 row">
+            <div class="col-sm-6 row">
+                <label class="col-sm-6 col-form-label" for="">Stories per page</label>
+                <div class="col-sm-6">
+                    <input class="col-sm-6 form-control" name="story_per_page" value={{ user_profile.story_per_page }} />
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-group mb-3 row">
-        <div class="col-sm-6 row">
-            <label class="col-sm-6 col-form-label" for="">Score threshold to highlight</label>
-            <div class="col-sm-6">
-                <input class="form-control" name="hightlight_score_threshold" value={{ user_profile.hightlight_score_threshold }} />
+        <div class="form-group mb-3 row">
+            <div class="col-sm-6 row">
+                <label class="col-sm-6 col-form-label" for="">Score threshold to highlight</label>
+                <div class="col-sm-6">
+                    <input class="form-control" name="hightlight_score_threshold" value={{ user_profile.hightlight_score_threshold }} />
+                </div>
+            </div>
+            <div class="col-sm-6 row">
+                <label class="col-sm-6 col-form-label">Comments threshold to highlight</label>
+                <div class="col-sm-6">
+                    <input class="form-control" name="hightlight_comment_threshold" value={{ user_profile.hightlight_comment_threshold }} />
+                </div>
             </div>
         </div>
-        <div class="col-sm-6 row">
-            <label class="col-sm-6 col-form-label">Comments threshold to highlight</label>
-            <div class="col-sm-6">
-                <input class="form-control" name="hightlight_comment_threshold" 
-                        value={{ user_profile.hightlight_comment_threshold }} />
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group mb-3">
-            <input type="checkbox" class="form-check-input col-form-check-input" name="save_and_hide" 
-            id="save_and_hide_checkbox"
-            {% if user_profile.save_and_hide %}checked{% endif %}/>
+        <div class="form-group mb-3">
+            <input type="checkbox"
+                   class="form-check-input col-form-check-input"
+                   name="save_and_hide"
+                   id="save_and_hide_checkbox"
+                   {% if user_profile.save_and_hide %}checked{% endif %}/>
             <label class="form-check-label" for="save_and_hide_checkbox">Save and Hide</label>
         </div>
         <div class="form-group mb-3">
-                <input type="checkbox" class="form-check-input col-form-check-input" name="open_hn_by_default" 
-                    id="open_hn_checkbox"
-                    {% if user_profile.open_hn_by_default %}checked{% endif %} />
+            <input type="checkbox"
+                   class="form-check-input col-form-check-input"
+                   name="open_hn_by_default"
+                   id="open_hn_checkbox"
+                   {% if user_profile.open_hn_by_default %}checked{% endif %}/>
             <label class="col-sm-6 form-check-label" for="open_hn_checkbox">Open HN by default</label>
-        </div>  
-
-    <div class="form-group mb-3">
-        <label class="form-label" for="">Stories to display (All/+24H/-24H)</label>
-        <select id="default_display-combobox" class="form-select" aria-label="Default Display" name="default_display"> 
-            <option value="all"  {% if user_profile.default_display == 0 %}selected{% endif %}>All</option>
-            <option value="recent_stories" {% if user_profile.default_display == -1 %}selected{% endif %}>Recent Stories (-24h)</option>
-            <option value="old_stories" {% if user_profile.default_display == -2 %}selected{% endif %}>Old Stories (+24h)</option>
-          </select>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" for="">Stories to display (All/+24H/-24H)</label>
+            <select id="default_display-combobox"
+                    class="form-select"
+                    aria-label="Default Display"
+                    name="default_display">
+                <option value="all"
+                        {% if user_profile.default_display == 0 %}selected{% endif %}>
+                    All
+                </option>
+                <option value="recent_stories"
+                        {% if user_profile.default_display == -1 %}selected{% endif %}>
+                    Recent Stories (-24h)
+                </option>
+                <option value="old_stories"
+                        {% if user_profile.default_display == -2 %}selected{% endif %}>
+                    Old Stories (+24h)
+                </option>
+            </select>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox"
+                   class="form-check-input open_in_new_tab-input"
+                   name="open_in_new_tab"
+                   id="open_in_new_tab_checkbox"
+                   {% if user_profile.open_in_new_tab %}checked{% endif %}/>
+            <label class="form-check-label" for="open_in_new_tab_checkbox">Open links in new tab</label>
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label" for="startup_page">Startup page:</label>
+            <select id="startup-page-combobox"
+                    class="form-select"
+                    aria-label="Startup Page"
+                    form="profile-form"
+                    name="startup_page"
+                    id="startup-page">
+                <option selected>
+                    Choose startup page
+                </option>
+                <option value="best"
+                        {% if user_profile.startup_page == 'best' %}selected{% endif %}>
+                    Best
+                </option>
+                <option value="top"
+                        {% if user_profile.startup_page == 'top' %}selected{% endif %}>
+                    Top
+                </option>
+                <option value="ask"
+                        {% if user_profile.startup_page == 'ask' %}selected{% endif %}>
+                    Ask HN
+                </option>
+                <option value="show"
+                        {% if user_profile.startup_page == 'show' %}selected{% endif %}>
+                    Show HN
+                </option>
+                <option value="new"
+                        {% if user_profile.startup_page == 'new' %}selected{% endif %}>
+                    New
+                </option>
+            </select>
+        </div>
+        <div class="form-group mb-3">
+            <button type="submit"
+                    name="save_profile_btn"
+                    value="{{ story.id }}"
+                    class="btn btn-primary">Save</button>
+        </div>
     </div>
-    <div class="form-check mb-3">
-        <input type="checkbox" class="form-check-input open_in_new_tab-input" name="open_in_new_tab" 
-          id="open_in_new_tab_checkbox"
-          {% if user_profile.open_in_new_tab %}checked{% endif %} />
-          <label class="form-check-label" for="open_in_new_tab_checkbox">Open links in new tab</label>
-    </div>
-    <div class="form-group mb-3">
-        <label class="form-label" for="startup_page">Startup page:</label>
-        <select id="startup-page-combobox" class="form-select" aria-label="Startup Page" form="profile-form"
-            name="startup_page" id="startup-page">
-            <option selected>Choose startup page</option>
-            <option value="best" {% if user_profile.startup_page == 'best' %}selected{% endif %} >Best</option>
-            <option value="top" {% if user_profile.startup_page == 'top' %}selected{% endif %} >Top</option>
-            <option value="ask" {% if user_profile.startup_page == 'ask' %}selected{% endif %} >Ask HN</option>
-            <option value="show" {% if user_profile.startup_page == 'show' %}selected{% endif %} >Show HN</option>
-            <option value="new" {% if user_profile.startup_page == 'new' %}selected{% endif %} >New</option>
-        </select>
-    </div>
-    <div class="form-group mb-3">
-        <button type="submit" name="save_profile_btn" value="{{ story.id }}" class="btn btn-primary" >
-        Save
-    </button>
-    </div>
-</div>
 </form>
-
 {% endblock content %}
