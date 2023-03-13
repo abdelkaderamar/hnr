@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'feed.apps.FeedConfig',
     'accounts.apps.AccountsConfig',
     'bootstrap5',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -165,3 +166,8 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 EXPORT_DIR = os.path.join(BASE_DIR, 'export')
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}

@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils.http import urlencode
 
+from rest_framework import viewsets, permissions
+
 from collections import OrderedDict
 from datetime import datetime, timedelta
 import os
@@ -17,6 +19,7 @@ from rich import inspect
 from accounts.models import UserProfile
 
 from .models import Story, UserStory, DefaultConfig
+from .serializers import StorySerializer
 
 from dataclasses import dataclass
 
@@ -33,6 +36,11 @@ class user_story_data:
 
     def __repr__(self):
         return self.__str__()
+
+class StoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.all().order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 def get_stories_page(request, stories):

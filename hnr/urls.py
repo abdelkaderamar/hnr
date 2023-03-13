@@ -18,10 +18,21 @@ from django.urls import path, include
 
 from feed import views as feedViews
 
+from rest_framework import routers
+
+from feed import views as feedViews
+from .views import about
+
+router = routers.DefaultRouter()
+router.register(r'story', feedViews.StoryViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', feedViews.home, name='home'),
     path('about', about, name='about'),
     path('feed/', include('feed.urls')),
     path('accounts/', include('accounts.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/', include(router.urls)),
+
 ]
