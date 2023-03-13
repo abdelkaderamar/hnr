@@ -3,7 +3,6 @@ from .models import Story
 from rest_framework import serializers
 
 class StorySerializer(serializers.HyperlinkedModelSerializer):
-    url_field_name = 'api_url'
     class Meta:
         model = Story
         fields = [
