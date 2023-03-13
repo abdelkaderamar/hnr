@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card m-3">
+    <h5 class="card-header">HNR (HackerNews Reader)</h5>
+    <div class="card-body">
+      <p class="card-text">
+        <b>HNR</b> is my personnal app to read <a href="https://news.ycombinator.com/">Hackernews</a> website</p>
+        <p>
+        <span>The requirements behind building this application were:
+          <ul>
+            <li>Save stories so I can read them later</li>
+            <li>Hide already visited or non intersting stories</li>
+            <li>Export saved stories in a textual format</li>
+            <li>Create list by keywords</li>
+            <li>Feed my link aggregator <a href="../../kopikol">Kopikol</a></li> 
+          </ul>
+        </span>
+      </p>
+      <p class="card-text">
+        It is a self-hosted Django application. The source code can be found
+        <a href="https://github.com/abdelkaderamar/hnr">here</a>
+      </p>
+    </div>
+  </div>
+{% endblock content %}

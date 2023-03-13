@@ -21,6 +21,7 @@ from feed import views as feedViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', feedViews.home, name='home'),
+    path('about', about, name='about'),
     path('feed/', include('feed.urls')),
     path('accounts/', include('accounts.urls')),
 ]
