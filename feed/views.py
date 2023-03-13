@@ -438,7 +438,7 @@ def search(request):
     print(f"Keyword = {keyword}")
     # all_links = all_links.filter(title__icontains=keyword)
     all_stories = all_stories.filter(query)
-    context = get_context(request, all_stories)
+    context = get_context(request, all_stories, include_ignored=True)
     context['keyword'] = keyword
     context['search_keyword'] = keyword
     return render(request, "feed/search.html", context)
