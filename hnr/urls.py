@@ -20,11 +20,17 @@ from feed import views as feedViews
 
 from rest_framework import routers
 
+from feed.models import *
 from feed import views as feedViews
 from .views import about
 
 router = routers.DefaultRouter()
-router.register(r'story', feedViews.StoryViewSet)
+router.register(r'stories', feedViews.StoryViewSet, basename="stories")
+router.register(r'best_stories', feedViews.BestStoryViewSet, basename="best_stories")
+router.register(r'top_stories', feedViews.TopStoryViewSet, basename="top_stories")
+router.register(r'new_stories', feedViews.NewStoryViewSet, basename="new_stories")
+router.register(r'ask_stories', feedViews.AskStoryViewSet, basename="ask_stories")
+router.register(r'show_stories', feedViews.ShowStoryViewSet, basename="show_stories")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

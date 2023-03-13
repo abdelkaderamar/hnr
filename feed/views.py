@@ -42,6 +42,30 @@ class StoryViewSet(viewsets.ModelViewSet):
   serializer_class = StorySerializer
   permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+class BestStoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.filter(is_best=1).order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class NewStoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.filter(is_new=1).order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class TopStoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.filter(is_top=1).order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class AskStoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.filter(is_ask=1).order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class ShowStoryViewSet(viewsets.ModelViewSet):
+  queryset = Story.objects.filter(is_show=1).order_by('-time')
+  serializer_class = StorySerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 def get_stories_page(request, stories):
     stories_per_page = UserProfile.STORIES_PER_PAGE
