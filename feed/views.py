@@ -15,6 +15,7 @@ import json
 import logging
 from functools import reduce
 from rich import inspect
+import re
 
 from accounts.models import UserProfile
 
@@ -342,7 +343,10 @@ def hidden(request):
 # @login_required
 def custom_stories(request, key: str):
     print(f"Stories for key {key}")
-    all_stories = Story.objects.filter(title__icontains=key).order_by('-time')
+    # Old method using icontains (not working with word like Java/Javascript)
+    # all_stories = Story.objects.filter(title__icontains=f"{key}").order_by('-time')
+    esacped_key = re.escape(key)
+    all_stories = Story.objects.filter(title__iregex=rf"{esacped_key}[^a-zA-Z]|{esacped_key}$").order_by('-time')
     inspect(all_stories)
     key = key.lower()
     # all_stories = [s for s in all_stories if key in s.title.lower()]
