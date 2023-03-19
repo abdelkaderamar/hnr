@@ -77,7 +77,7 @@
           {% if stories.has_previous %}
             <li class="page-item">
               <a class="page-link"
-                 href="?page={{ stories.previous_page_number }}&order_by={{ order_by }}">Previous</a>
+                 href="?page={{ stories.previous_page_number }}&{{ additional_params }}">Previous</a>
             </li>
           {% else %}
             <li class="page-item disabled">
@@ -86,11 +86,11 @@
           {% endif %}
           {% if stories.number|add:'-4' > 1 %}
             <li class="page-item">
-              <a class="page-link" href="?page=1&order_by={{ order_by }}">1</a>
+              <a class="page-link" href="?page=1&{{ additional_params }}">1</a>
             </li>
             <li class="page-item">
               <a class="page-link"
-                 href="?page={{ stories.number|add:'-5' }}&order_by={{ order_by }}">...</a>
+                 href="?page={{ stories.number|add:'-5' }}&{{ additional_params }}">...</a>
             </li>
           {% endif %}
           {% for i in stories.paginator.page_range %}
@@ -103,18 +103,18 @@
               </li>
             {% elif i > stories.number|add:'-5' and i < stories.number|add:'5' %}
               <li class="page-item">
-                <a class="page-link" href="?page={{ i }}&order_by={{ order_by }}">{{ i }}</a>
+                <a class="page-link" href="?page={{ i }}&{{ additional_params }}">{{ i }}</a>
               </li>
             {% endif %}
           {% endfor %}
           {% if stories.paginator.num_pages > stories.number|add:'4' %}
             <li class="page-item">
               <a class="page-link"
-                 href="?page={{ stories.number|add:'5' }}&order_by={{ order_by }}">...</a>
+                 href="?page={{ stories.number|add:'5' }}&{{ additional_params }}">...</a>
             </li>
             <li class="page-item">
               <a class="page-link"
-                 href="?page={{ stories.paginator.num_pages }}&order_by={{ order_by }}">{{ stories.paginator.num_pages }}</a>
+                 href="?page={{ stories.paginator.num_pages }}&{{ additional_params }}">{{ stories.paginator.num_pages }}</a>
             </li>
           {% endif %}
           {% if stories.has_next %}

@@ -118,14 +118,24 @@ def sort_stories(request, all_stories, sort_param, is_ascending):
             all_stories.sort(key=lambda s : 0 if s.descendants == 0 else s.score/s.descendants, reverse=True)
     return all_stories
 
-def get_context(request, all_stories, include_ignored=False):
-
-    is_ascending = None
+def get_sort_params(request):
+    sort_param = "time"
+    sort_way = "descending"
     if request.method == "GET":
         sort_param = request.GET.get("order_by")
+        sort_way = request.GET.get("sort_way")
     elif request.method == "POST":
         sort_param = request.POST.get("order_by")
-        is_ascending = request.POST.get("sort_way") == "ascending"
+        sort_way = request.POST.get("sort_way")
+    if sort_param is None:
+        sort_param = "time"
+    if sort_way is None:
+        sort_way = "descending"
+    return sort_param, sort_way
+
+def get_context(request, all_stories, include_ignored=False):
+    sort_param, sort_way = get_sort_params(request)
+    is_ascending = sort_way == "ascending"
     all_stories = sort_stories(request, all_stories, sort_param, is_ascending)
     stories = OrderedDict((s.id, user_story_data(s)) for s in all_stories)
     stories = fill_user_data(stories, request.user, include_ignored=include_ignored)
@@ -152,7 +162,8 @@ def get_context(request, all_stories, include_ignored=False):
         'open_in_new_tab': open_in_new_tab,
         'score_threshold': score_threshold,
         'comment_threshold': comment_threshold,
-        'story_count': len(stories)
+        'story_count': len(stories),
+        'additional_params': f'order_by={sort_param}&sort_way={sort_way}',
     }
     return context
 
